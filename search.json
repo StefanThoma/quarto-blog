@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "posts/2021-01 -09_welcome/index.html",
+    "href": "posts/2021-01 -09_welcome/index.html",
+    "title": "What is this???",
+    "section": "",
+    "text": "The structure of this Blog is based on a fork of the GitHub repo of the fantastic blog by Danielle Navarro, please check it out!"
+  },
+  {
+    "objectID": "posts/2021-01 -09_welcome/index.html#last-updated",
+    "href": "posts/2021-01 -09_welcome/index.html#last-updated",
+    "title": "What is this???",
+    "section": "Last updated",
+    "text": "Last updated\n\n2023-01-09 21:32:55 CET"
+  },
+  {
+    "objectID": "posts/2021-01 -09_welcome/index.html#details",
+    "href": "posts/2021-01 -09_welcome/index.html#details",
+    "title": "What is this???",
+    "section": "Details",
+    "text": "Details\n\nsource code, R environment"
+  },
+  {
+    "objectID": "posts/2023-01-09_CICD-spelling/index.html",
+    "href": "posts/2023-01-09_CICD-spelling/index.html",
+    "title": "Using CICD to check spelling in quarto documents",
+    "section": "",
+    "text": "As a data scientist or R programmer, you may be familiar with the benefits of version control systems like GitHub for tracking changes to your code base and collaborating with others. But did you know that you can also use GitHub to automate the testing, building, and deployment of your R projects? This process, known as continuous integration and deployment (CICD), can save you time and effort by ensuring that your code is always in a deploy-able state and by automatically delivering new updates to your users. In this blog post, we will show you how to set up CICD for your quarto documents on GitHub, including configuring a build pipeline and integrating a spelling checker. By the end of this tutorial, you will have a workflow in place that helps you catch spelling mistakes before they make it into your final documents."
+  },
+  {
+    "objectID": "posts/2023-01-09_CICD-spelling/index.html#cicd",
+    "href": "posts/2023-01-09_CICD-spelling/index.html#cicd",
+    "title": "Using CICD to check spelling in quarto documents",
+    "section": "CICD",
+    "text": "CICD\nCICD is often used in GitHub projects for package development where it helps to maintain a certain code-quality and style consistency across different contributors and developers. For R projects other than packages CICD is used much less frequently. I belief that setting up CICD pipelines for less complex projects with only very few contributors is still useful to ensure consistent style, spelling, and more.\nAs I am occasionally involved in creating teaching materials in R using quarto, I wanted to implement some CICD checks for quarto documents. As most out-of-the-box CICD pipelines are designed for package development, existing pipelines needed some adjustment to work with other R projects."
+  },
+  {
+    "objectID": "posts/2023-01-09_CICD-spelling/index.html#aim",
+    "href": "posts/2023-01-09_CICD-spelling/index.html#aim",
+    "title": "Using CICD to check spelling in quarto documents",
+    "section": "Aim",
+    "text": "Aim\nWhen creating teaching materials in R I rely on GitHub for version control. Generally, I have a main-branch which deploys to a GitHub-page displaying the rendered content. The development of materials happens on the devel branch with a pending merge request to the main branch. Whenever a chapter or a section is ready to be published, I merge the branches. I wanted to create a pipeline that runs a spell-check on all my quarto files on the merge request with main, i.e.: Whenever I push to devel I want GitHub to run the CICD pipeline to check my spelling. As an example, I will show how to implement spelling CICD on this blog-project."
+  },
+  {
+    "objectID": "posts/2023-01-09_CICD-spelling/index.html#spell-check",
+    "href": "posts/2023-01-09_CICD-spelling/index.html#spell-check",
+    "title": "Using CICD to check spelling in quarto documents",
+    "section": "Spell-check",
+    "text": "Spell-check\nBecause R is all I know, I would like to use an R-package to do the spell-checking. The spelling package is well suited for the task, as it allows to spell-check all files at once. Before we try to implement the CICD pipeline, the spell-checker has to work locally, so we first install and load the package:\n\ninstall.packages(spelling)\n\n\nlibrary(tidyverse)\n\n── Attaching packages ─────────────────────────────────── tidyverse 1.3.2 ──\n✔ ggplot2 3.4.0      ✔ purrr   1.0.0 \n✔ tibble  3.1.8      ✔ dplyr   1.0.10\n✔ tidyr   1.2.1      ✔ stringr 1.5.0 \n✔ readr   2.1.3      ✔ forcats 0.5.2 \n── Conflicts ────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\n\nlibrary(spelling)\n\nIf you are working on a package, you can directly use the function spell_check_package() and the spelling package will do so. If you are working on any other R project you have to use the spell_check_files() function and you have to include a path to the files you want to check. Let’s check just this file:\n\n#2023-01-09_CICD-spelling/\nspelling::spell_check_files(path = \"index.qmd\")\n\n  WORD         FOUND IN\nCICD         index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,117,137,138,139,141\neval         index.qmd:56,144,166\ngithub       index.qmd:138\nlockfile     index.qmd:17\npng          index.qmd:9\nqmd          index.qmd:71,84,96,106,113,129,161\nqmd's        index.qmd:103\nreadr        index.qmd:161\nrenv         index.qmd:17\nrepo         index.qmd:153\nRscript      index.qmd:158,162\nsubfolders   index.qmd:105\nThoma        index.qmd:4\ntidyverse    index.qmd:61,151\nubuntu       index.qmd:150\nwordlist     index.qmd:79,84,90,97,110,120\nWORDLIST     index.qmd:117,120,123,130,161\nyaml         index.qmd:141,143\n\n\nIt looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word CICD (which apparently I overuse). We should carefully look through this list and decide, whether any mistakes were made. We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope). Therefore, we want to add these words to a file that include words to be ignored by the spelling package.\nIf you are working on a package, this is easy, you can use the spelling::update_wordlist() function. We simply save the list of words as a .txt file. For now, we save it in the working directory.\n\nwrite(spelling::spell_check_files(path = \"index.qmd\")[[1]], \"wordlist.txt\")\n\nThe file looks like this:\n\nread_lines(\"wordlist.txt\")\n\n [1] \"CICD\"       \"eval\"       \"github\"     \"lockfile\"   \"png\"       \n [6] \"qmd\"        \"qmd's\"      \"readr\"      \"renv\"       \"repo\"      \n[11] \"Rscript\"    \"subfolders\" \"Thoma\"      \"tidyverse\"  \"ubuntu\"    \n[16] \"wordlist\"   \"WORDLIST\"   \"yaml\"      \n\n\nNow we can tell spelling to ignore the words in this file from typo-detection:\n\nspelling::spell_check_files(path = \"index.qmd\", \n                            ignore = read_lines(\"wordlist.txt\"))\n\nNo spelling errors found.\n\n\n\nlink to the package description spelling\n\n\n# we can get all qmd's in a project by \nlist.files(path = \"../..\", # first setting the path to the project\n           recursive = TRUE, # include subfolders\n           pattern = \".*.qmd$\") # include only files ending in .qmd\n\n[1] \"index.qmd\"                               \n[2] \"posts/2021-01 -09_welcome/index.qmd\"     \n[3] \"posts/2023-01-09_CICD-spelling/index.qmd\"\n\n\n\nwordlist <- list.files(path = \"../..\", \n                       recursive = TRUE, \n                       full.names = TRUE,\n                       pattern = \".*.qmd$\") %>% \n  spelling::spell_check_files()\n\nThis can now be saved into a project level WORDLIST file to be accessed later by our CICD workflow.\n\nwrite(x = wordlist[[1]], file =   \"../../inst/WORDLIST.txt\")\n\nCheck again with WORDLIST:\n\nlist.files(path = \"../..\", \n                       recursive = TRUE, \n                       full.names = TRUE,\n                       pattern = \".*.qmd$\") %>% \n  spelling::spell_check_files(ignore = read_lines(\"../../inst/WORDLIST.txt\"))\n\nNo spelling errors found.\n\n\nLooks like it worked — great!"
+  },
+  {
+    "objectID": "posts/2023-01-09_CICD-spelling/index.html#setup",
+    "href": "posts/2023-01-09_CICD-spelling/index.html#setup",
+    "title": "Using CICD to check spelling in quarto documents",
+    "section": "Setup",
+    "text": "Setup\nNow this needs to be implemented in the CICD pipeline. To implement GitHub CICD I create a folder .github in the project directory, and the folder workflows within the .github folder. This is where CICD pipelines are stored.\nCICD pipelines written in yaml format, it should look like this:\n#| eval: false\nname: Spellcheck\non:\n  pull_request: {branches: ['main']}\njobs:\n  Spelling:\n    runs-on: ubuntu-latest\n    container: {image: \"rocker/tidyverse:4.2.1\"}\n    steps:\n      - name: Checkout repo\n        uses: actions/checkout@v3\n\n      - name: Install spelling\n        run: if (!require(\"spelling\")) install.packages(\"spelling\")\n        shell: Rscript {0}\n\n      - name: Run Spelling Check test\n        run: spelling::spell_check_files(list.files(pattern = \".*.qmd$\", recursive = TRUE), ignore = readr::read_lines(\"inst/WORDLIST.txt\"))\n        shell: Rscript {0}"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Bayseic blog",
+    "section": "",
+    "text": "–>  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhat is this???\n\n\n\nBlogging\n\n\n\nblabla\n\n\n\nStefan Thoma\n\n\nJan 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUsing CICD to check spelling in quarto documents\n\n\n\nCICD\n\n\nR\n\n\nGitHub\n\n\nQuarto\n\n\n\nThis post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD).\n\n\n\nStefan Thoma\n\n\nJan 1, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  }
+]
