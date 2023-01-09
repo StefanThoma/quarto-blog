@@ -117,6 +117,7 @@ wordlist <- list.files(path = "../..",
 This can now be saved into a project level WORDLIST file to be accessed later by our CICD workflow.
 
 ```{r}
+#| eval: false
 write(x = wordlist[[1]], file =   "../../inst/WORDLIST.txt")
 ```
 
@@ -191,13 +192,10 @@ jobs:
       - name: Run Spelling Check test
         run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
         shell: Rscript {0}
-              
-        - name: Run Spelling Check test 2
-        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE))
-        shell: Rscript {0}
-        
         
 ```
+
+
 
 We run just one job called `Spelling`.
 
@@ -213,8 +211,68 @@ The actual workflow is defined in the `steps` (which can be named) --- here we o
  - At last, we run the spell check in R. By default, the code is executed in the project level directory, so we do not need to adjust the path in the `list.files()` function to go up the project directory. The same goes for the `ìnst/WORDLIST` file.
  
  
+Now while this works, it will not throw an error if typos are spotted. 
+We can remedy this by writing code that throws an error if there is a typo: 
+
+
+```{r}
+#| error: true
+testthat::test_that(desc = "No Typo", 
+                    code = testthat::expect_equal(
+                      object = spelling::spell_check_files(path = list.files(path = "../..", pattern = ".*.qmd$", recursive = TRUE, full.names = TRUE), ignore = readr::read_lines("../../inst/WORDLIST.txt")),
+                      expected = spelling::spell_check_files(list.files(path = "../../inst"), ignore = read_lines(list.files(path = "../../inst")))))
+```
+
+We can now implement this test into our CICD workflow:
 
  
+``` yaml
+#| eval: false
+name: Spellcheck
+on:
+  pull_request: {branches: ['main']}
+jobs:
+  Spelling:
+    runs-on: ubuntu-latest
+    container: {image: "rocker/tidyverse:4.2.1"}
+    steps:
+      - name: 1 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 2 Install spelling
+        run: if (!require("spelling")) install.packages("spelling")
+        shell: Rscript {0}
+
+      - name: 3 Run Spelling Check test
+        run: (check <- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt")))
+        shell: Rscript {0}
+        
+      - name: 4 Install testthat
+        run: if (!require("testthat")) install.packages("testthat")
+        shell: Rscript {0}
+        
+      - name: 5 Test spellcheck
+        run: testthat::test_that(desc = "No Typo", 
+                    code = testthat::expect_equal(
+                      object = check, # as it was saved in step 3
+                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
+```
+
+ 
+
+
+
+## Change language
+ 
+This works fine for english, but what if we write in german?
+The `spelling` package depends on the `hunspell` package. 
+This package comes with the english dictionary preinstalled. 
+Further, it looks at the user library for any other dictionaries requested in the `spelling` function call. 
+
+We can add dictionaries to the user library in the OS we are using to locally check the spelling in our projects. 
+As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file. 
+
+...
  
 
 <!--------------- appendices go here ----------------->

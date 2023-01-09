@@ -13,6 +13,7 @@ github
 gsub
 href
 https
+ìnst
 jpg
 lockfile
 netlify
@@ -30,6 +31,7 @@ StefanThoma
 str
 stringr
 subfolders
+testthat
 Thoma
 tidyverse
 ubuntu

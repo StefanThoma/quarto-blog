@@ -1,6 +1,13 @@
 CICD
+desc
+djnavarro
+english
 eval
+german
 github
+https
+hunspell
+ìnst
 lockfile
 png
 qmd
@@ -10,6 +17,7 @@ renv
 repo
 Rscript
 subfolders
+testthat
 Thoma
 tidyverse
 ubuntu
