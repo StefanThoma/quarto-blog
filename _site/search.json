@@ -11,7 +11,7 @@
     "href": "posts/2021-01 -09_welcome/index.html#last-updated",
     "title": "What is this???",
     "section": "Last updated",
-    "text": "Last updated\n\n2023-01-09 18:24:30 CET"
+    "text": "Last updated\n\n2023-01-09 18:31:35 CET"
   },
   {
     "objectID": "posts/2021-01 -09_welcome/index.html#details",
@@ -60,6 +60,6 @@
     "href": "index.html",
     "title": "Bayseic blog",
     "section": "",
-    "text": "What is this???\n\n\n\nBlogging\n\n\n\nblabla\n\n\n\nStefan Thoma\n\n\nJan 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUsing CICD to check spelling in quarto documents\n\n\n\nCICD\n\n\nR\n\n\nGitHub\n\n\nQuarto\n\n\n\nThis post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD).\n\n\n\nStefan Thoma\n\n\nJan 1, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "–>  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhat is this???\n\n\n\nBlogging\n\n\n\nblabla\n\n\n\nStefan Thoma\n\n\nJan 9, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUsing CICD to check spelling in quarto documents\n\n\n\nCICD\n\n\nR\n\n\nGitHub\n\n\nQuarto\n\n\n\nThis post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD).\n\n\n\nStefan Thoma\n\n\nJan 1, 2023\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]

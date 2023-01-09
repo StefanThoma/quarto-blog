@@ -8,12 +8,12 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        
+
       - name: Install spelling
         run: if (!require("spelling")) install.packages("spelling")
         shell: Rscript {0}
 
       - name: Run Spelling Check test
-        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = read.lines("inst/WORDLIST.txt"))
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = read_lines("inst/WORDLIST.txt"))
         shell: Rscript {0}
-        
+

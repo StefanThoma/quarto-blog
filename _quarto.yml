@@ -3,32 +3,32 @@ project:
 
 website:
   title: "Notes"
-  site-url: https://blog.djnavarro.net
-  repo-url: https://github.com/djnavarro/quarto-blog
+ # site-url: https://blog.djnavarro.net
+#  repo-url: https://github.com/djnavarro/quarto-blog
   open-graph: true
-  twitter-card:
-    creator: "@djnavarro"
-    card-style: summary_large_image
+#  twitter-card:
+#    creator: "@djnavarro"
+#    card-style: summary_large_image
   navbar:
     background: "#eeeeee"
-    right:
-      - icon: mastodon
-        aria-label: mastodon
-        href: https://fosstodon.org/@djnavarro
-      - icon: github
-        aria-label: github
-        href: https://github.com/djnavarro
-      - icon: person-circle
-        aria-label: website
-        href: https://djnavarro.net
-      - icon: palette-fill
-        aria-label: art
-        href: https://art.djnavarro.net
+#    right:
+#      - icon: mastodon
+#        aria-label: mastodon
+#        href: https://fosstodon.org/@djnavarro
+#      - icon: github
+#        aria-label: github
+#        href: https://github.com/djnavarro
+#      - icon: person-circle
+#        aria-label: website
+#        href: https://djnavarro.net
+#      - icon: palette-fill
+#        aria-label: art
+#        href: https://art.djnavarro.net
 
 format:
   html:
     theme: ember.scss
     css: styles.css
-    include-after-body: plausible.html
+ #   include-after-body: plausible.html
 
 
