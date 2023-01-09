@@ -44,13 +44,13 @@ Generally, I have a `main`-branch which deploys to a GitHub-page displaying the 
 The development of materials happens on the `devel` branch with a pending merge request to the `main` branch.
 Whenever a chapter or a section is ready to be published, I merge the branches.
 I wanted to create a pipeline that runs a spell-check on all my quarto files on the merge request with `main`, i.e.: Whenever I push to `devel` I want GitHub to run the CICD pipeline to check my spelling.
-As an example, I will show how to implement spelling CICD on this blog-project. 
+As an example, I will show how to implement spelling CICD on this blog-project.
 
 ## Spell-check
 
-Because R is all I know, I would like to use an R-package to do the spell-checking. 
-The `spelling` package is well suited for the task, as it allows to spell-check all files at once. 
-Before we try to implement the CICD pipeline, the spell-checker has to work locally, so we first install and load the package: 
+Because R is all I know, I would like to use an R-package to do the spell-checking.
+The `spelling` package is well suited for the task, as it allows to spell-check all files at once.
+Before we try to implement the CICD pipeline, the spell-checker has to work locally, so we first install and load the package:
 
 ```{r}
 #| eval: false
@@ -61,35 +61,43 @@ install.packages(spelling)
 library(tidyverse)
 library(spelling)
 ```
+
 If you are working on a package, you can directly use the function `spell_check_package()` and the `spelling` package will do so.
-If you are working on any other R project you have to use the `spell_check_files()` function and you have to include a path to the files you want to check. 
+If you are working on any other R project you have to use the `spell_check_files()` function and you have to include a path to the files you want to check.
 Let's check just this file:
+
 ```{r}
 #2023-01-09_CICD-spelling/
 spelling::spell_check_files(path = "index.qmd")
 ```
+
 It looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word *CICD* (which apparently I overuse).
 We should carefully look through this list and decide, whether any mistakes were made.
 We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope).
-Therefore, we want to add these words to a file that include words to be ignored by the `spelling` package. 
+Therefore, we want to add these words to a file that include words to be ignored by the `spelling` package.
 
 If you are working on a package, this is easy, you can use the `spelling::update_wordlist()` function.
 We simply save the list of words as a *.txt* file.
-For now, we save it in the working directory. 
+For now, we save it in the working directory.
 
 ```{r}
 write(spelling::spell_check_files(path = "index.qmd")[[1]], "wordlist.txt")
 ```
-The file looks like this: 
+
+The file looks like this:
+
 ```{r}
 read_lines("wordlist.txt")
 ```
+
 Now we can tell `spelling` to ignore the words in this file from typo-detection:
+
 ```{r}
 spelling::spell_check_files(path = "index.qmd", 
                             ignore = read_lines("wordlist.txt"))
 ```
-- link to the package description spelling
+
+-   link to the package description spelling
 
 ```{r}
 # we can get all qmd's in a project by 
@@ -105,12 +113,15 @@ wordlist <- list.files(path = "../..",
                        pattern = ".*.qmd$") %>% 
   spelling::spell_check_files()
 ```
+
 This can now be saved into a project level WORDLIST file to be accessed later by our CICD workflow.
+
 ```{r}
 write(x = wordlist[[1]], file =   "../../inst/WORDLIST.txt")
 ```
 
 Check again with WORDLIST:
+
 ```{r}
 list.files(path = "../..", 
                        recursive = TRUE, 
@@ -118,19 +129,92 @@ list.files(path = "../..",
                        pattern = ".*.qmd$") %>% 
   spelling::spell_check_files(ignore = read_lines("../../inst/WORDLIST.txt"))
 ```
+
 Looks like it worked --- great!
 
 ## Setup
-Now this needs to be implemented in the CICD pipeline. 
-To implement GitHub CICD I create a folder `.github` in the project directory, and the folder `workflows` within the `.github` folder. 
+
+Now this needs to be implemented in the CICD pipeline.
+To implement GitHub CICD I create a folder `.github` in the project directory, and the folder `workflows` within the `.github` folder.
 This is where CICD pipelines are stored.
 
+CICD pipelines written in `yaml` format, it should look like this:
 
+``` yaml
+#| eval: false
+name: Spellcheck
+on:
+  pull_request: {branches: ['main']}
+jobs:
+  Spelling:
+    runs-on: ubuntu-latest
+    container: {image: "rocker/tidyverse:4.2.1"}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
+      - name: Install spelling
+        run: if (!require("spelling")) install.packages("spelling")
+        shell: Rscript {0}
 
+      - name: Run Spelling Check test
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
+        shell: Rscript {0}
+```
 
+The first few lines define the name of the workflow (`Spellcheck`) and when it should be executed.
+\
+In this case, the action runs on pull requests to the `main` branch.
 
+``` yaml
+#| eval: false
+name: Spellcheck
+on:
+  pull_request: {branches: ['main']}
+```
 
+Then, we define the job to run:
 
+``` yaml
+jobs:
+  Spelling:
+    runs-on: ubuntu-latest
+    container: {image: "rocker/tidyverse:4.2.1"}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install spelling
+        run: if (!require("spelling")) install.packages("spelling")
+        shell: Rscript {0}
+
+      - name: Run Spelling Check test
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
+        shell: Rscript {0}
+              
+        - name: Run Spelling Check test 2
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE))
+        shell: Rscript {0}
+        
+        
+```
+
+We run just one job called `Spelling`.
+
+It is run on a [docker image](https://blog.djnavarro.net/posts/2023-01-01_playing-with-docker/) deployed by GitHub. 
+We use a particular docker image that comes with R and tidyverse preinstalled, this eases the use of R in this image. 
+
+The actual workflow is defined in the `steps` (which can be named) --- here we only have three steps. 
+
+ - `actions/checkout@v3` loads the GitHub repository so the subsequent steps can reference the repo. 
+ 
+ -  Next, the *Install spelling* step installs the R package `spelling`. This is written in R code, so we need to specify that we run the command in R. We do this with the instruction `shell: Rscript {0}`. 
+ 
+ - At last, we run the spell check in R. By default, the code is executed in the project level directory, so we do not need to adjust the path in the `list.files()` function to go up the project directory. The same goes for the `ìnst/WORDLIST` file.
+ 
+ 
+
+ 
+ 
 
 <!--------------- appendices go here ----------------->

@@ -5,9 +5,14 @@ lockfile
 png
 qmd
 qmd's
+readr
 renv
+repo
+Rscript
 subfolders
 Thoma
 tidyverse
+ubuntu
 wordlist
 WORDLIST
+yaml

@@ -134,17 +134,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Notes - Using CICD to check spelling in quarto documents">
 <meta property="og:description" content="This post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD).">
-<meta property="og:image" content="https://blog.djnavarro.net/posts/2023-01-09_CICD-spelling/CICD.png">
+<meta property="og:image" content="CICD.png">
 <meta property="og:site-name" content="Notes">
-<meta property="og:image:height" content="1006">
-<meta property="og:image:width" content="1024">
-<meta name="twitter:title" content="Notes - Using CICD to check spelling in quarto documents">
-<meta name="twitter:description" content="This post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD).">
-<meta name="twitter:image" content="https://blog.djnavarro.net/posts/2023-01-09_CICD-spelling/CICD.png">
-<meta name="twitter:creator" content="@djnavarro">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image-height" content="1006">
-<meta name="twitter:image-width" content="1024">
 </head>
 
 <body class="floating nav-fixed">
@@ -158,34 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <span class="navbar-title">Notes</span>
     </a>
   </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/@djnavarro"><i class="bi bi-mastodon" role="img" aria-label="mastodon">
-</i> 
- <span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/djnavarro"><i class="bi bi-github" role="img" aria-label="github">
-</i> 
- <span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://djnavarro.net"><i class="bi bi-person-circle" role="img" aria-label="website">
-</i> 
- <span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://art.djnavarro.net"><i class="bi bi-palette-fill" role="img" aria-label="art">
-</i> 
- <span class="menu-text"></span></a>
-  </li>  
-</ul>
-              <div id="quarto-search" class="" title="Search"></div>
-          </div> <!-- /navcollapse -->
+          <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -290,19 +254,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  WORD         FOUND IN
-CICD         index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,68,71,108,124,125,126
-eval         index.qmd:56
-github       index.qmd:125
+CICD         index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,117,137,138,139,141
+eval         index.qmd:56,144,166
+github       index.qmd:138
 lockfile     index.qmd:17
 png          index.qmd:9
-qmd          index.qmd:69,81,89,98,105,118
-qmd's        index.qmd:95
+qmd          index.qmd:71,84,96,106,113,129,161
+qmd's        index.qmd:103
+readr        index.qmd:161
 renv         index.qmd:17
-subfolders   index.qmd:97
+repo         index.qmd:153
+Rscript      index.qmd:158,162
+subfolders   index.qmd:105
 Thoma        index.qmd:4
-tidyverse    index.qmd:61
-wordlist     index.qmd:76,81,85,90,102,110
-WORDLIST     index.qmd:108,110,113,119</code></pre>
+tidyverse    index.qmd:61,151
+ubuntu       index.qmd:150
+wordlist     index.qmd:79,84,90,97,110,120
+WORDLIST     index.qmd:117,120,123,130,161
+yaml         index.qmd:141,143</code></pre>
 </div>
 </div>
 <p>It looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word <em>CICD</em> (which apparently I overuse). We should carefully look through this list and decide, whether any mistakes were made. We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope). Therefore, we want to add these words to a file that include words to be ignored by the <code>spelling</code> package.</p>
@@ -315,8 +284,9 @@ WORDLIST     index.qmd:108,110,113,119</code></pre>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_lines</span>(<span class="st">"wordlist.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "CICD"       "eval"       "github"     "lockfile"   "png"       
- [6] "qmd"        "qmd's"      "renv"       "subfolders" "Thoma"     
-[11] "tidyverse"  "wordlist"   "WORDLIST"  </code></pre>
+ [6] "qmd"        "qmd's"      "readr"      "renv"       "repo"      
+[11] "Rscript"    "subfolders" "Thoma"      "tidyverse"  "ubuntu"    
+[16] "wordlist"   "WORDLIST"   "yaml"      </code></pre>
 </div>
 </div>
 <p>Now we can tell <code>spelling</code> to ignore the words in this file from typo-detection:</p>
@@ -368,6 +338,26 @@ WORDLIST     index.qmd:108,110,113,119</code></pre>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <p>Now this needs to be implemented in the CICD pipeline. To implement GitHub CICD I create a folder <code>.github</code> in the project directory, and the folder <code>workflows</code> within the <code>.github</code> folder. This is where CICD pipelines are stored.</p>
+<p>CICD pipelines written in <code>yaml</code> format, it should look like this:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Spellcheck</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">'main'</span><span class="kw">]}</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">Spelling</span><span class="kw">:</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">image</span><span class="kw">:</span><span class="at"> </span><span class="st">"rocker/tidyverse:4.2.1"</span><span class="kw">}</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Checkout repo</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v3</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install spelling</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> if (!require("spelling")) install.packages("spelling")</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run Spelling Check test</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <!--------------- appendices go here ----------------->
 
 
@@ -377,12 +367,11 @@ WORDLIST     index.qmd:108,110,113,119</code></pre>
   author = {Stefan Thoma},
   title = {Using {CICD} to Check Spelling in Quarto Documents},
   date = {2023-01-01},
-  url = {https://blog.djnavarro.net/posts/2023-01-09_CICD-spelling},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-thoma2023" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
 Stefan Thoma. 2023. <span>“Using CICD to Check Spelling in Quarto
-Documents.”</span> January 1, 2023. <a href="https://blog.djnavarro.net/posts/2023-01-09_CICD-spelling">https://blog.djnavarro.net/posts/2023-01-09_CICD-spelling</a>.
+Documents.”</span> January 1, 2023.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
