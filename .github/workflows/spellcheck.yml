@@ -6,14 +6,23 @@ jobs:
     runs-on: ubuntu-latest
     container: {image: "rocker/tidyverse:4.2.1"}
     steps:
-      - name: Checkout repo
+      - name: 1 Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install spelling
+      - name: 2 Install spelling
         run: if (!require("spelling")) install.packages("spelling")
         shell: Rscript {0}
 
-      - name: Run Spelling Check test
+      - name: 3 Run Spelling Check test
         run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
         shell: Rscript {0}
 
+      - name: 4 Install testthat
+        run: if (!require("testthat")) install.packages("testthat")
+        shell: Rscript {0}
+
+      - name: 5 Test spellcheck
+        run: testthat::test_that(desc = "No Typo",
+                    code = testthat::expect_equal(
+                      object = check, # as it was saved in step 3
+                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
