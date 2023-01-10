@@ -134,10 +134,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Notes - Using CICD to check spelling in quarto documents">
 <meta property="og:description" content="This post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD).">
-<meta property="og:image" content="https://StefanThoma.github.io/quarto-blog/posts/2023-01-09_CICD-spelling/CICD.png">
+<meta property="og:image" content="CICD.png">
 <meta property="og:site-name" content="Notes">
-<meta property="og:image:height" content="1006">
-<meta property="og:image:width" content="1024">
 </head>
 
 <body class="floating nav-fixed">
@@ -205,7 +203,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#cicd" id="toc-cicd" class="nav-link active" data-scroll-target="#cicd">CICD</a></li>
   <li><a href="#aim" id="toc-aim" class="nav-link" data-scroll-target="#aim">Aim</a></li>
   <li><a href="#spell-check" id="toc-spell-check" class="nav-link" data-scroll-target="#spell-check">Spell-check</a></li>
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#append-wordlist" id="toc-append-wordlist" class="nav-link" data-scroll-target="#append-wordlist">append wordlist</a></li>
+  </ul></li>
   <li><a href="#change-language" id="toc-change-language" class="nav-link" data-scroll-target="#change-language">Change language</a></li>
   </ul>
 </nav>
@@ -256,35 +257,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#2023-01-09_CICD-spelling/</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  WORD         FOUND IN
-callout      index.qmd:109
-CICD         index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,117,128,149,150,151,153,237,279
-desc         index.qmd:231,265
-djnavarro    index.qmd:211
-english      index.qmd:273,275
-eval         index.qmd:56,131,156,182,240
-german       index.qmd:273
-github       index.qmd:150
-https        index.qmd:211
-hunspell     index.qmd:274
-ìnst        index.qmd:224
-lockfile     index.qmd:17
-png          index.qmd:9
-qmd          index.qmd:71,84,96,106,112,113,124,141,173,204,233,257
-qmd's        index.qmd:103
-readr        index.qmd:173,204,233,257,268
-renv         index.qmd:17
-repo         index.qmd:165,196,216,249
-Rproj        index.qmd:112
-Rscript      index.qmd:170,174,201,205,220,254,258,262
-subfolders   index.qmd:105
-testthat     index.qmd:231,232,260,261,265,266
-Thoma        index.qmd:4
-tidyverse    index.qmd:61,163,194,212,247
-ubuntu       index.qmd:162,193,246
-wordlist     index.qmd:79,84,90,97,121,132
-WORDLIST     index.qmd:128,132,135,142,173,204,224,233,257,268
-yaml         index.qmd:153,155,181,190,239</code></pre>
+<pre><code>  WORD             FOUND IN
+aff              index.qmd:311,312,313
+callout          index.qmd:109
+CICD             index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,117,128,149,150,151,153,244,285
+de               index.qmd:312,313,320
+desc             index.qmd:231,271
+dic              index.qmd:311,312,313
+djnavarro        index.qmd:211
+doch             index.qmd:291,292
+eval             index.qmd:56,131,156,182
+frami            index.qmd:312,313,320
+FRAMI            index.qmd:313
+github           index.qmd:150,308
+hört            index.qmd:291,292
+https            index.qmd:211,308
+hunspell         index.qmd:280,301,304,311,313
+ìnst            index.qmd:224
+jeder            index.qmd:291,292
+JW               index.qmd:287
+lang             index.qmd:313,320
+lockfile         index.qmd:17
+nur              index.qmd:291,292
+png              index.qmd:9
+pre              index.qmd:281
+qmd              index.qmd:71,84,96,106,112,113,124,141,173,204,233,263,271
+qmd's            index.qmd:103
+readr            index.qmd:173,204,235,238,263,271
+renv             index.qmd:17
+repo             index.qmd:165,196,216,255,308,309
+Rproj            index.qmd:112
+Rscript          index.qmd:170,174,201,205,220,260,264,268,272
+RStudio          index.qmd:322
+subfolders       index.qmd:105
+testthat         index.qmd:231,232,266,267,271
+Thoma            index.qmd:4
+tidyverse        index.qmd:61,163,194,212,253
+ubuntu           index.qmd:162,193,252
+verowokjnsthet   index.qmd:291,292
+von              index.qmd:287
+wordlist         index.qmd:79,84,90,97,121,132,275
+WORDLIST         index.qmd:128,132,135,142,173,204,224,235,237,238,263,271,312
+yaml             index.qmd:153,155,181,190,246
+zitat            index.qmd:290
+Zitat            index.qmd:290,291,292,298,320</code></pre>
 </div>
 </div>
 <p>It looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word <em>CICD</em> (which apparently I overuse). We should carefully look through this list and decide, whether any mistakes were made. We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope). Therefore, we want to add these words to a file that include words to be ignored by the <code>spelling</code> package.</p>
@@ -296,12 +312,17 @@ yaml         index.qmd:153,155,181,190,239</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_lines</span>(<span class="st">"wordlist.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "callout"    "CICD"       "desc"       "djnavarro"  "english"   
- [6] "eval"       "german"     "github"     "https"      "hunspell"  
-[11] "ìnst"       "lockfile"   "png"        "qmd"        "qmd's"     
-[16] "readr"      "renv"       "repo"       "Rproj"      "Rscript"   
-[21] "subfolders" "testthat"   "Thoma"      "tidyverse"  "ubuntu"    
-[26] "wordlist"   "WORDLIST"   "yaml"      </code></pre>
+<pre><code> [1] "aff"            "callout"        "CICD"           "de"            
+ [5] "desc"           "dic"            "djnavarro"      "doch"          
+ [9] "eval"           "frami"          "FRAMI"          "github"        
+[13] "hört"           "https"          "hunspell"       "ìnst"          
+[17] "jeder"          "JW"             "lang"           "lockfile"      
+[21] "nur"            "png"            "pre"            "qmd"           
+[25] "qmd's"          "readr"          "renv"           "repo"          
+[29] "Rproj"          "Rscript"        "RStudio"        "subfolders"    
+[33] "testthat"       "Thoma"          "tidyverse"      "ubuntu"        
+[37] "verowokjnsthet" "von"            "wordlist"       "WORDLIST"      
+[41] "yaml"           "zitat"          "Zitat"         </code></pre>
 </div>
 </div>
 <p>Now we can tell <code>spelling</code> to ignore the words in this file from typo-detection:</p>
@@ -347,24 +368,39 @@ path
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">pattern =</span> <span class="st">".*.qmd$"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  spelling<span class="sc">::</span><span class="fu">spell_check_files</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This can now be saved into a project level WORDLIST file to be accessed later by our CICD workflow.</p>
+<p>This can now be saved into a project level WORDLIST_EXAMPLE file to be accessed later by our CICD workflow.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(<span class="at">x =</span> wordlist[[<span class="dv">1</span>]], <span class="at">file =</span>   <span class="st">"../../inst/WORDLIST.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(<span class="at">x =</span> wordlist[[<span class="dv">1</span>]], <span class="at">file =</span>   <span class="st">"../../inst/WORDLIST_EXAMPLE.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Check again with WORDLIST:</p>
+<p>Check again with WORDLIST_EXAMPLE:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"../.."</span>, </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">recursive =</span> <span class="cn">TRUE</span>, </span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">full.names =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">pattern =</span> <span class="st">".*.qmd$"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">ignore =</span> <span class="fu">read_lines</span>(<span class="st">"../../inst/WORDLIST.txt"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">ignore =</span> <span class="fu">read_lines</span>(<span class="st">"../../inst/WORDLIST_EXAMPLE.txt"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  WORD       FOUND IN
-callout    index.qmd:109
-english    index.qmd:273,275
-german     index.qmd:273
-hunspell   index.qmd:274
-Rproj      index.qmd:112</code></pre>
+<pre><code>  WORD             FOUND IN
+aff              index.qmd:311,312,313
+callout          index.qmd:109
+de               index.qmd:312,313,320
+dic              index.qmd:311,312,313
+doch             index.qmd:291,292
+frami            index.qmd:312,313,320
+FRAMI            index.qmd:313
+hört            index.qmd:291,292
+hunspell         index.qmd:280,301,304,311,313
+jeder            index.qmd:291,292
+JW               index.qmd:287
+lang             index.qmd:313,320
+nur              index.qmd:291,292
+pre              index.qmd:281
+Rproj            index.qmd:112
+RStudio          index.qmd:322
+verowokjnsthet   index.qmd:291,292
+von              index.qmd:287
+zitat            index.qmd:290
+Zitat            index.qmd:290,291,292,298,320</code></pre>
 </div>
 </div>
 <p>Looks like it worked — great!</p>
@@ -390,7 +426,7 @@ Rproj      index.qmd:112</code></pre>
 <span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
 <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run Spelling Check test</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))</span></span>
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The first few lines define the name of the workflow (<code>Spellcheck</code>) and when it should be executed.<br>
 </p>
@@ -413,7 +449,7 @@ Rproj      index.qmd:112</code></pre>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run Spelling Check test</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))</span></span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We run just one job called <code>Spelling</code>.</p>
@@ -422,19 +458,26 @@ Rproj      index.qmd:112</code></pre>
 <ul>
 <li><p><code>actions/checkout@v3</code> loads the GitHub repository so the subsequent steps can reference the repo.</p></li>
 <li><p>Next, the <em>Install spelling</em> step installs the R package <code>spelling</code>. This is written in R code, so we need to specify that we run the command in R. We do this with the instruction <code>shell: Rscript {0}</code>.</p></li>
-<li><p>At last, we run the spell check in R. By default, the code is executed in the project level directory, so we do not need to adjust the path in the <code>list.files()</code> function to go up the project directory. The same goes for the <code>ìnst/WORDLIST</code> file.</p></li>
+<li><p>At last, we run the spell check in R. By default, the code is executed in the project level directory, so we do not need to adjust the path in the <code>list.files()</code> function to go up the project directory. The same goes for the <code>ìnst/WORDLIST_EXAMPLE</code> file.</p></li>
 </ul>
 <p>Now while this works, it will not throw an error if typos are spotted. We can remedy this by writing code that throws an error if there is a typo:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_that</span>(<span class="at">desc =</span> <span class="st">"No Typo"</span>, </span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">code =</span> testthat<span class="sc">::</span><span class="fu">expect_equal</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">object =</span> spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"../.."</span>, <span class="at">pattern =</span> <span class="st">".*.qmd$"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>), <span class="at">ignore =</span> readr<span class="sc">::</span><span class="fu">read_lines</span>(<span class="st">"../../inst/WORDLIST.txt"</span>)),</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">expected =</span> spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"../../inst"</span>), <span class="at">ignore =</span> <span class="fu">read_lines</span>(<span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"../../inst"</span>)))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">object =</span> spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"../.."</span>, <span class="at">pattern =</span> <span class="st">".*.qmd$"</span>, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                                                                             <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">ignore =</span> readr<span class="sc">::</span><span class="fu">read_lines</span>(<span class="st">"../../inst/WORDLIST_EXAMPLE.txt"</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                                                           ),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">expected =</span> spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span>  <span class="st">"../../inst/WORDLIST_EXAMPLE.txt"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                                                              <span class="at">ignore =</span> readr<span class="sc">::</span><span class="fu">read_lines</span>(<span class="st">"../../inst/WORDLIST_EXAMPLE.txt"</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                                                             )</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                      )</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>── Failure (???): No Typo ──────────────────────────────────────────────────────
 spelling::spell_check_files(...) not equal to spelling::spell_check_files(...).
-Attributes: &lt; Component "row.names": Numeric: lengths (5, 0) differ &gt;
-Component "word": Lengths (5, 0) differ (string compare on first 0)
+Attributes: &lt; Component "row.names": Numeric: lengths (20, 0) differ &gt;
+Component "word": Lengths (20, 0) differ (string compare on first 0)
 Component "found": Length mismatch: comparison on first 0 components</code></pre>
 </div>
 <div class="cell-output cell-output-error">
@@ -443,40 +486,82 @@ Component "found": Length mismatch: comparison on first 0 components</code></pre
 </div>
 </div>
 <p>We can now implement this test into our CICD workflow:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Spellcheck</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">'main'</span><span class="kw">]}</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">Spelling</span><span class="kw">:</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">image</span><span class="kw">:</span><span class="at"> </span><span class="st">"rocker/tidyverse:4.2.1"</span><span class="kw">}</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> 1 Checkout repo</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v3</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> 2 Install spelling</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> if (!require("spelling")) install.packages("spelling")</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> 3 Run Spelling Check test</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> (check &lt;- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt")))</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> 4 Install testthat</span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> if (!require("testthat")) install.packages("testthat")</span></span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
-<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
-<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> 5 Test spellcheck</span></span>
-<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> testthat::test_that(desc = "No Typo", </span></span>
-<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="at">                    code = testthat::expect_equal(</span></span>
-<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="at">                      object = check,</span><span class="co"> # as it was saved in step 3</span></span>
-<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="at">                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Spellcheck</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">'main'</span><span class="kw">]}</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">Spelling</span><span class="kw">:</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">image</span><span class="kw">:</span><span class="at"> </span><span class="st">"rocker/tidyverse:4.2.1"</span><span class="kw">}</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Checkout repo</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v3</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install spelling</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> if (!require("spelling")) install.packages("spelling")</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run Spelling Check test</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install testthat</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> if (!require("testthat")) install.packages("testthat")</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> test typos</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt")), expected = spelling::spell_check_files(path = "inst/WORDLIST_EXAMPLE.txt", ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))))</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="append-wordlist" class="level3">
+<h3 class="anchored" data-anchor-id="append-wordlist">append wordlist</h3>
+</section>
 </section>
 <section id="change-language" class="level2">
 <h2 class="anchored" data-anchor-id="change-language">Change language</h2>
-<p>This works fine for english, but what if we write in german? The <code>spelling</code> package depends on the <code>hunspell</code> package. This package comes with the english dictionary preinstalled. Further, it looks at the user library for any other dictionaries requested in the <code>spelling</code> function call.</p>
-<p>We can add dictionaries to the user library in the OS we are using to locally check the spelling in our projects. As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file.</p>
+<p>This works fine for English, but what if we write in German? The <code>spelling</code> package depends on the <code>hunspell</code> package. This package comes with the English dictionary pre-installed. Further, it looks at the user library for any other dictionaries requested in the <code>spelling</code> function call.</p>
+<p>We can add dictionaries to the user library in the OS we are using to locally check the spelling in our projects. As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file within the CICD workflow.</p>
+<p>Let’s write a file that contains a German quote (by <em>JW von Goethe</em>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#zitat &lt;- file("Zitat.txt", encoding = "UTF-8")</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#write(x = "Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_lines</span>(<span class="st">"Es hört doch jeder nur, was er verowokjnsthet."</span>, <span class="at">file =</span> <span class="st">"Zitat.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>spelling</code> package does not recognize the language in a file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="st">"Zitat.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  WORD             FOUND IN
+doch             Zitat.txt:1
+hört            Zitat.txt:1
+jeder            Zitat.txt:1
+nur              Zitat.txt:1
+verowokjnsthet   Zitat.txt:1</code></pre>
+</div>
+</div>
+<p>We can list the dictionaries that are currently available to the hunspell package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>hunspell<span class="sc">::</span><span class="fu">list_dictionaries</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "de_CH_frami" "en_AU"       "en_CA"       "en_GB"       "en_US"      </code></pre>
+</div>
+</div>
+<p>Apparently, only English dictionaries are available at the moment. You can download dictionaries from the <a href="https://github.com/LibreOffice/dictionaries">LibreOffice GitHub repo</a>. For me, the easiest way was to download the entire repo as a <code>.zip</code> folder and then move the dictionary files manually into the repo in which you want to spell-check using that dictionary.</p>
+<p><code>hunspell</code> requires two dictionary files for a language: the <code>.dic</code> and the <code>.aff</code> file. In this example we take the German dictionary files <code>de_DE_frami.aff</code> and <code>de_DE_frami.dic</code> and save them in the <code>inst</code> folder where our <code>WORDLIST_EXAMPLE.txt</code> file is as well. I am not sure why, but <code>hunspell</code> will look for the file <code>de_CH_FRAMI.dic</code> when we specify <code>lang = "inst/de_CH_frami"</code> so make sure to rename the <code>.dic</code> and <code>.aff</code> files as <code>de_DE_FRAMI.aff</code> and <code>de_DE_FRAMI.dic</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"../../inst"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "de_CH_frami.aff"      "de_CH_frami.dic"      "de_DE_frami.aff"     
+[4] "de_DE_frami.dic"      "WORDLIST_EXAMPLE.txt"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="st">"Zitat.txt"</span>, <span class="at">lang =</span> <span class="st">"../../inst/de_CH_frami"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  WORD              FOUND IN
+verowokjnsthet.   Zitat.txt:1</code></pre>
+</div>
+</div>
+<p>On the first try I got an encoding error, but after restarting RStudio this worked well.</p>
 <p>…</p>
 <!--------------- appendices go here ----------------->
 
@@ -487,12 +572,11 @@ Component "found": Length mismatch: comparison on first 0 components</code></pre
   author = {Stefan Thoma},
   title = {Using {CICD} to Check Spelling in Quarto Documents},
   date = {2023-01-01},
-  url = {https://StefanThoma.github.io/quarto-blog//posts/2023-01-09_CICD-spelling},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-thoma2023" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
 Stefan Thoma. 2023. <span>“Using CICD to Check Spelling in Quarto
-Documents.”</span> January 1, 2023. <a href="https://StefanThoma.github.io/quarto-blog//posts/2023-01-09_CICD-spelling">https://StefanThoma.github.io/quarto-blog//posts/2023-01-09_CICD-spelling</a>.
+Documents.”</span> January 1, 2023.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

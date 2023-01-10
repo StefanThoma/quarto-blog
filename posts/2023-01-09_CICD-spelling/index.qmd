@@ -125,21 +125,21 @@ wordlist <- list.files(path = "../..",
   spelling::spell_check_files()
 ```
 
-This can now be saved into a project level WORDLIST file to be accessed later by our CICD workflow.
+This can now be saved into a project level WORDLIST_EXAMPLE file to be accessed later by our CICD workflow.
 
 ```{r}
 #| eval: false
-write(x = wordlist[[1]], file =   "../../inst/WORDLIST.txt")
+write(x = wordlist[[1]], file =   "../../inst/WORDLIST_EXAMPLE.txt")
 ```
 
-Check again with WORDLIST:
+Check again with WORDLIST_EXAMPLE:
 
 ```{r}
 list.files(path = "../..", 
                        recursive = TRUE, 
                        full.names = TRUE,
                        pattern = ".*.qmd$") %>% 
-  spelling::spell_check_files(ignore = read_lines("../../inst/WORDLIST.txt"))
+  spelling::spell_check_files(ignore = read_lines("../../inst/WORDLIST_EXAMPLE.txt"))
 ```
 
 Looks like it worked --- great!
@@ -170,7 +170,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run Spelling Check test
-        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))
         shell: Rscript {0}
 ```
 
@@ -201,7 +201,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run Spelling Check test
-        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))
         shell: Rscript {0}
         
 ```
@@ -221,7 +221,7 @@ The actual workflow is defined in the `steps` (which can be named) --- here we o
 
 -   At last, we run the spell check in R.
     By default, the code is executed in the project level directory, so we do not need to adjust the path in the `list.files()` function to go up the project directory.
-    The same goes for the `ìnst/WORDLIST` file.
+    The same goes for the `ìnst/WORDLIST_EXAMPLE` file.
 
 Now while this works, it will not throw an error if typos are spotted.
 We can remedy this by writing code that throws an error if there is a typo:
@@ -230,14 +230,20 @@ We can remedy this by writing code that throws an error if there is a typo:
 #| error: true
 testthat::test_that(desc = "No Typo", 
                     code = testthat::expect_equal(
-                      object = spelling::spell_check_files(path = list.files(path = "../..", pattern = ".*.qmd$", recursive = TRUE, full.names = TRUE), ignore = readr::read_lines("../../inst/WORDLIST.txt")),
-                      expected = spelling::spell_check_files(list.files(path = "../../inst"), ignore = read_lines(list.files(path = "../../inst")))))
+                      object = spelling::spell_check_files(path = list.files(path = "../..", pattern = ".*.qmd$", 
+                                                                             recursive = TRUE, full.names = TRUE), 
+                                                           ignore = readr::read_lines("../../inst/WORDLIST_EXAMPLE.txt")
+                                                           ),
+                      expected = spelling::spell_check_files(path =  "../../inst/WORDLIST_EXAMPLE.txt",
+                                                              ignore = readr::read_lines("../../inst/WORDLIST_EXAMPLE.txt")
+                                                             )
+                      )
+                    )
 ```
 
 We can now implement this test into our CICD workflow:
 
 ``` yaml
-#| eval: false
 name: Spellcheck
 on:
   pull_request: {branches: ['main']}
@@ -246,37 +252,76 @@ jobs:
     runs-on: ubuntu-latest
     container: {image: "rocker/tidyverse:4.2.1"}
     steps:
-      - name: 1 Checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: 2 Install spelling
+      - name: Install spelling
         run: if (!require("spelling")) install.packages("spelling")
         shell: Rscript {0}
 
-      - name: 3 Run Spelling Check test
-        run: (check <- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt")))
+      - name: Run Spelling Check test
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))
         shell: Rscript {0}
-        
-      - name: 4 Install testthat
+
+      - name: Install testthat
         run: if (!require("testthat")) install.packages("testthat")
         shell: Rscript {0}
-        
-      - name: 5 Test spellcheck
-        run: testthat::test_that(desc = "No Typo", 
-                    code = testthat::expect_equal(
-                      object = check, # as it was saved in step 3
-                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
+
+      - name: test typos
+        run: testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt")), expected = spelling::spell_check_files(path = "inst/WORDLIST_EXAMPLE.txt", ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))))
+        shell: Rscript {0}
 ```
+
+### append wordlist
 
 ## Change language
 
-This works fine for english, but what if we write in german?
+This works fine for English, but what if we write in German?
 The `spelling` package depends on the `hunspell` package.
-This package comes with the english dictionary preinstalled.
+This package comes with the English dictionary pre-installed.
 Further, it looks at the user library for any other dictionaries requested in the `spelling` function call.
 
 We can add dictionaries to the user library in the OS we are using to locally check the spelling in our projects.
-As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file.
+As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file within the CICD workflow.
+
+Let's write a file that contains a German quote (by *JW von Goethe*).
+
+```{r}
+#zitat <- file("Zitat.txt", encoding = "UTF-8")
+#write(x = "Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")
+write_lines("Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")
+```
+
+The `spelling` package does not recognize the language in a file:
+
+```{r}
+spelling::spell_check_files("Zitat.txt")
+```
+
+We can list the dictionaries that are currently available to the hunspell package.
+
+```{r}
+hunspell::list_dictionaries()
+```
+
+Apparently, only English dictionaries are available at the moment.
+You can download dictionaries from the [LibreOffice GitHub repo](https://github.com/LibreOffice/dictionaries).
+For me, the easiest way was to download the entire repo as a `.zip` folder and then move the dictionary files manually into the repo in which you want to spell-check using that dictionary.
+
+`hunspell` requires two dictionary files for a language: the `.dic` and the `.aff` file.
+In this example we take the German dictionary files `de_DE_frami.aff` and `de_DE_frami.dic` and save them in the `inst` folder where our `WORDLIST_EXAMPLE.txt` file is as well.
+I am not sure why, but sometimes `hunspell` will look for the file `de_CH_FRAMI.dic` when we specify `lang = "inst/de_CH_frami"` so make sure to rename the `.dic` and `.aff` files as `de_DE_FRAMI.aff` and `de_DE_FRAMI.dic`, just to be sure.
+
+```{r}
+list.files("../../inst")
+```
+
+```{r}
+spelling::spell_check_files("Zitat.txt", lang = "../../inst/de_CH_frami")
+```
+On the first try I got an encoding error, but after restarting RStudio this worked well. 
+
+Think about whether to link to the utf-8 github repo of the dictionaries: https://github.com/JetBrains/hunspell-dictionaries
 
 ...
 
