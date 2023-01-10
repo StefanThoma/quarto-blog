@@ -14,7 +14,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run Spelling Check test
-        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
+        run: (check <- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt")))
         shell: Rscript {0}
 
       - name: Install testthat
@@ -26,3 +26,4 @@ jobs:
                     code = testthat::expect_equal(
                       object = check, # as it was saved in step 3
                       expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
+        shell: Rscript {0}
