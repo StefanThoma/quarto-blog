@@ -26,3 +26,4 @@ jobs:
                     code = testthat::expect_equal(
                       object = check, # as it was saved in step 3
                       expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
+        shell: Rscript {0}
