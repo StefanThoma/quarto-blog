@@ -22,8 +22,5 @@ jobs:
         shell: Rscript {0}
 
       - name: test typos
-        run: {testthat::test_that(desc = "No Typo",
-                    code = testthat::expect_equal(
-                      object = check,
-                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))}
+        run: testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = check, expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
         shell: Rscript {0}
