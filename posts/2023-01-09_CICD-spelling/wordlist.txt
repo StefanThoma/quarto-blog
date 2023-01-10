@@ -1,3 +1,4 @@
+callout
 CICD
 desc
 djnavarro
@@ -15,6 +16,7 @@ qmd's
 readr
 renv
 repo
+Rproj
 Rscript
 subfolders
 testthat

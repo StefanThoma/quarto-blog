@@ -255,32 +255,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  WORD         FOUND IN
-CICD         index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,117,138,139,140,142,226,273
-desc         index.qmd:220,255
-djnavarro    index.qmd:202
-english      index.qmd:267,269
-eval         index.qmd:56,120,145,171,230
-german       index.qmd:267
-github       index.qmd:139
-https        index.qmd:202
-hunspell     index.qmd:268
-ìnst        index.qmd:211
+callout      index.qmd:109
+CICD         index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,117,128,149,150,151,153,237,279
+desc         index.qmd:231,265
+djnavarro    index.qmd:211
+english      index.qmd:273,275
+eval         index.qmd:56,131,156,182,240
+german       index.qmd:273
+github       index.qmd:150
+https        index.qmd:211
+hunspell     index.qmd:274
+ìnst        index.qmd:224
 lockfile     index.qmd:17
 png          index.qmd:9
-qmd          index.qmd:71,84,96,106,113,130,162,193,222,247
+qmd          index.qmd:71,84,96,106,112,113,124,141,173,204,233,257
 qmd's        index.qmd:103
-readr        index.qmd:162,193,222,247,258
+readr        index.qmd:173,204,233,257,268
 renv         index.qmd:17
-repo         index.qmd:154,185,207,239
-Rscript      index.qmd:159,163,190,194,209,244,248,252
+repo         index.qmd:165,196,216,249
+Rproj        index.qmd:112
+Rscript      index.qmd:170,174,201,205,220,254,258,262
 subfolders   index.qmd:105
-testthat     index.qmd:220,221,250,251,255,256
+testthat     index.qmd:231,232,260,261,265,266
 Thoma        index.qmd:4
-tidyverse    index.qmd:61,152,183,203,237
-ubuntu       index.qmd:151,182,236
-wordlist     index.qmd:79,84,90,97,110,121
-WORDLIST     index.qmd:117,121,124,131,162,193,211,222,247,258
-yaml         index.qmd:142,144,170,179,229</code></pre>
+tidyverse    index.qmd:61,163,194,212,247
+ubuntu       index.qmd:162,193,246
+wordlist     index.qmd:79,84,90,97,121,132
+WORDLIST     index.qmd:128,132,135,142,173,204,224,233,257,268
+yaml         index.qmd:153,155,181,190,239</code></pre>
 </div>
 </div>
 <p>It looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word <em>CICD</em> (which apparently I overuse). We should carefully look through this list and decide, whether any mistakes were made. We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope). Therefore, we want to add these words to a file that include words to be ignored by the <code>spelling</code> package.</p>
@@ -292,12 +294,12 @@ yaml         index.qmd:142,144,170,179,229</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_lines</span>(<span class="st">"wordlist.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "CICD"       "desc"       "djnavarro"  "english"    "eval"      
- [6] "german"     "github"     "https"      "hunspell"   "ìnst"      
-[11] "lockfile"   "png"        "qmd"        "qmd's"      "readr"     
-[16] "renv"       "repo"       "Rscript"    "subfolders" "testthat"  
-[21] "Thoma"      "tidyverse"  "ubuntu"     "wordlist"   "WORDLIST"  
-[26] "yaml"      </code></pre>
+<pre><code> [1] "callout"    "CICD"       "desc"       "djnavarro"  "english"   
+ [6] "eval"       "german"     "github"     "https"      "hunspell"  
+[11] "ìnst"       "lockfile"   "png"        "qmd"        "qmd's"     
+[16] "readr"      "renv"       "repo"       "Rproj"      "Rscript"   
+[21] "subfolders" "testthat"   "Thoma"      "tidyverse"  "ubuntu"    
+[26] "wordlist"   "WORDLIST"   "yaml"      </code></pre>
 </div>
 </div>
 <p>Now we can tell <code>spelling</code> to ignore the words in this file from typo-detection:</p>
@@ -322,6 +324,20 @@ yaml         index.qmd:142,144,170,179,229</code></pre>
 [3] "posts/2023-01-09_welcome/index.qmd"      </code></pre>
 </div>
 </div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+path
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The structure of this project is such that each blog-post .qmd file is two folders down from the .Rproj file. The working directory of the .qmd blog-post file is where the file is located. If I want to list files or save files in a higher order folder I need to adjust my path to first go two folders up. I do this by adding <code>"../.."</code> to my file paths.</p>
+<p>The working directory of the CICD pipeline is by default on project level, therefore, the <code>"../.."</code> is not required.</p>
+</div>
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>wordlist <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"../.."</span>, </span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">recursive =</span> <span class="cn">TRUE</span>, </span>
@@ -342,9 +358,11 @@ yaml         index.qmd:142,144,170,179,229</code></pre>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">ignore =</span> <span class="fu">read_lines</span>(<span class="st">"../../inst/WORDLIST.txt"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  WORD       FOUND IN
-english    index.qmd:267,269
-german     index.qmd:267
-hunspell   index.qmd:268</code></pre>
+callout    index.qmd:109
+english    index.qmd:273,275
+german     index.qmd:273
+hunspell   index.qmd:274
+Rproj      index.qmd:112</code></pre>
 </div>
 </div>
 <p>Looks like it worked — great!</p>
@@ -373,7 +391,8 @@ hunspell   index.qmd:268</code></pre>
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))</span></span>
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The first few lines define the name of the workflow (<code>Spellcheck</code>) and when it should be executed.<br>
-In this case, the action runs on pull requests to the <code>main</code> branch.</p>
+</p>
+<p>In this case, the action runs on pull requests to the <code>main</code> branch.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Spellcheck</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
@@ -412,8 +431,8 @@ In this case, the action runs on pull requests to the <code>main</code> branch.<
 <div class="cell-output cell-output-stdout">
 <pre><code>── Failure (???): No Typo ──────────────────────────────────────────────────────
 spelling::spell_check_files(...) not equal to spelling::spell_check_files(...).
-Attributes: &lt; Component "row.names": Numeric: lengths (3, 0) differ &gt;
-Component "word": Lengths (3, 0) differ (string compare on first 0)
+Attributes: &lt; Component "row.names": Numeric: lengths (5, 0) differ &gt;
+Component "word": Lengths (5, 0) differ (string compare on first 0)
 Component "found": Length mismatch: comparison on first 0 components</code></pre>
 </div>
 <div class="cell-output cell-output-error">
