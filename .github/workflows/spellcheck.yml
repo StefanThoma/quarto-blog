@@ -21,9 +21,9 @@ jobs:
         run: if (!require("testthat")) install.packages("testthat")
         shell: Rscript {0}
 
-      - name: Test spellcheck
-        run: testthat::test_that(desc = "No Typo",
+      - name: test typos
+        run: {testthat::test_that(desc = "No Typo",
                     code = testthat::expect_equal(
                       object = check, # as it was saved in step 3
-                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
+                      expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))}
         shell: Rscript {0}
