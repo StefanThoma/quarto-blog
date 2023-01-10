@@ -106,6 +106,17 @@ list.files(path = "../..", # first setting the path to the project
            pattern = ".*.qmd$") # include only files ending in .qmd
 ```
 
+::: callout-note
+## path
+
+The structure of this project is such that each blog-post .qmd file is two folders down from the .Rproj file.
+The working directory of the .qmd blog-post file is where the file is located.
+If I want to list files or save files in a higher order folder I need to adjust my path to first go two folders up.
+I do this by adding `"../.."` to my file paths.
+
+The working directory of the CICD pipeline is by default on project level, therefore, the `"../.."` is not required.
+:::
+
 ```{r}
 wordlist <- list.files(path = "../..", 
                        recursive = TRUE, 
@@ -163,8 +174,8 @@ jobs:
         shell: Rscript {0}
 ```
 
-The first few lines define the name of the workflow (`Spellcheck`) and when it should be executed.
-\
+The first few lines define the name of the workflow (`Spellcheck`) and when it should be executed.\
+
 In this case, the action runs on pull requests to the `main` branch.
 
 ``` yaml
@@ -195,25 +206,25 @@ jobs:
         
 ```
 
-
-
 We run just one job called `Spelling`.
 
-It is run on a [docker image](https://blog.djnavarro.net/posts/2023-01-01_playing-with-docker/) deployed by GitHub. 
-We use a particular docker image that comes with R and tidyverse preinstalled, this eases the use of R in this image. 
+It is run on a [docker image](https://blog.djnavarro.net/posts/2023-01-01_playing-with-docker/) deployed by GitHub.
+We use a particular docker image that comes with R and tidyverse preinstalled, this eases the use of R in this image.
 
-The actual workflow is defined in the `steps` (which can be named) --- here we only have three steps. 
+The actual workflow is defined in the `steps` (which can be named) --- here we only have three steps.
 
- - `actions/checkout@v3` loads the GitHub repository so the subsequent steps can reference the repo. 
- 
- -  Next, the *Install spelling* step installs the R package `spelling`. This is written in R code, so we need to specify that we run the command in R. We do this with the instruction `shell: Rscript {0}`. 
- 
- - At last, we run the spell check in R. By default, the code is executed in the project level directory, so we do not need to adjust the path in the `list.files()` function to go up the project directory. The same goes for the `ìnst/WORDLIST` file.
- 
- 
-Now while this works, it will not throw an error if typos are spotted. 
-We can remedy this by writing code that throws an error if there is a typo: 
+-   `actions/checkout@v3` loads the GitHub repository so the subsequent steps can reference the repo.
 
+-   Next, the *Install spelling* step installs the R package `spelling`.
+    This is written in R code, so we need to specify that we run the command in R.
+    We do this with the instruction `shell: Rscript {0}`.
+
+-   At last, we run the spell check in R.
+    By default, the code is executed in the project level directory, so we do not need to adjust the path in the `list.files()` function to go up the project directory.
+    The same goes for the `ìnst/WORDLIST` file.
+
+Now while this works, it will not throw an error if typos are spotted.
+We can remedy this by writing code that throws an error if there is a typo:
 
 ```{r}
 #| error: true
@@ -225,7 +236,6 @@ testthat::test_that(desc = "No Typo",
 
 We can now implement this test into our CICD workflow:
 
- 
 ``` yaml
 #| eval: false
 name: Spellcheck
@@ -258,21 +268,16 @@ jobs:
                       expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
 ```
 
- 
-
-
-
 ## Change language
- 
-This works fine for english, but what if we write in german?
-The `spelling` package depends on the `hunspell` package. 
-This package comes with the english dictionary preinstalled. 
-Further, it looks at the user library for any other dictionaries requested in the `spelling` function call. 
 
-We can add dictionaries to the user library in the OS we are using to locally check the spelling in our projects. 
-As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file. 
+This works fine for english, but what if we write in german?
+The `spelling` package depends on the `hunspell` package.
+This package comes with the english dictionary preinstalled.
+Further, it looks at the user library for any other dictionaries requested in the `spelling` function call.
+
+We can add dictionaries to the user library in the OS we are using to locally check the spelling in our projects.
+As soon as we want to spell-check on GitHub (with CICD) it gets a bit more tricky because we need to reference a library file.
 
 ...
- 
 
 <!--------------- appendices go here ----------------->
