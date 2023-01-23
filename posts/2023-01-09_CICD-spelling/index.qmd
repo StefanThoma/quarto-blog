@@ -81,23 +81,23 @@ We simply save the list of words as a *.txt* file.
 For now, we save it in the working directory.
 
 ```{r}
-write(spelling::spell_check_files(path = "index.qmd")[[1]], "wordlist.txt")
+write(spelling::spell_check_files(path = "index.qmd")[[1]], "WORDLIST.txt")
 ```
 
 The file looks like this:
 
 ```{r}
-read_lines("wordlist.txt")
+read_lines("WORDLIST.txt")
 ```
 
 Now we can tell `spelling` to ignore the words in this file from typo-detection:
 
 ```{r}
 spelling::spell_check_files(path = "index.qmd", 
-                            ignore = read_lines("wordlist.txt"))
+                            ignore = read_lines("WORDLIST.txt"))
 ```
 
--   link to the package description spelling
+You can find a more comprehensive guide to the `spelling` package [in the manual.](https://cran.r-project.org/web/packages/spelling/spelling.pdf)
 
 ```{r}
 # we can get all qmd's in a project by 
@@ -106,10 +106,10 @@ list.files(path = "../..", # first setting the path to the project
            pattern = ".*.qmd$") # include only files ending in .qmd
 ```
 
-::: callout-note
+::: callout-caution
 ## path
 
-The structure of this project is such that each blog-post .qmd file is two folders down from the .Rproj file.
+The structure of this project is such that each blog-post `.qmd` file is two folders down from the `.Rproj` file.
 The working directory of the .qmd blog-post file is where the file is located.
 If I want to list files or save files in a higher order folder I need to adjust my path to first go two folders up.
 I do this by adding `"../.."` to my file paths.
@@ -125,14 +125,18 @@ wordlist <- list.files(path = "../..",
   spelling::spell_check_files()
 ```
 
-This can now be saved into a project level WORDLIST_EXAMPLE file to be accessed later by our CICD workflow.
+Now you should take a good look at the output and fix any typos spotted.
+
+
+What remains is a list of words to be ignored.
+They can now be saved into a project level `WORDLIST_EXAMPLE.txt` file to be accessed later by our CICD workflow.
 
 ```{r}
 #| eval: false
 write(x = wordlist[[1]], file =   "../../inst/WORDLIST_EXAMPLE.txt")
 ```
 
-Check again with WORDLIST_EXAMPLE:
+Check again with `WORDLIST_EXAMPLE.txt`:
 
 ```{r}
 list.files(path = "../..", 
@@ -144,7 +148,17 @@ list.files(path = "../..",
 
 Looks like it worked --- great!
 
-## Setup
+### Append WORDLIST
+
+It makes sense to check the spelling locally before you push to your `develop` branch.
+For this purpose I create an r-script where I can run the spell-check for the project and where I can also append the `WORDLIST.txt` file if needed.
+
+```{r}
+#| eval: false
+#| file: CICD-Spellcheck.R
+```
+
+## Setup CICD Workflow
 
 Now this needs to be implemented in the CICD pipeline.
 To implement GitHub CICD I create a folder `.github` in the project directory, and the folder `workflows` within the `.github` folder.
@@ -209,7 +223,7 @@ jobs:
 We run just one job called `Spelling`.
 
 It is run on a [docker image](https://blog.djnavarro.net/posts/2023-01-01_playing-with-docker/) deployed by GitHub.
-We use a particular docker image that comes with R and tidyverse preinstalled, this eases the use of R in this image.
+We use a particular docker image that comes with R and tidyverse pre-installed, this eases the use of R in this image.
 
 The actual workflow is defined in the `steps` (which can be named) --- here we only have three steps.
 
@@ -221,10 +235,16 @@ The actual workflow is defined in the `steps` (which can be named) --- here we o
 
 -   At last, we run the spell check in R.
     By default, the code is executed in the project level directory, so we do not need to adjust the path in the `list.files()` function to go up the project directory.
-    The same goes for the `ìnst/WORDLIST_EXAMPLE` file.
+    The same goes for the `ìnst/WORDLIST_EXAMPLE.txt` file.
 
 Now while this works, it will not throw an error if typos are spotted.
-We can remedy this by writing code that throws an error if there is a typo:
+We can remedy this by writing code that throws an error if there is a typo. 
+The `testthat` package is designed to test R code for packages. 
+We use its `test_that()` function together with the `expect_equal()` function where we can specify the test we want to conduct. 
+Our test is simple: As the `object` argument we run the spell-check from above. 
+The output we expect is a spell-check that did not result in any error. 
+We have to supply such an object representing a flawless spell-check in the `expected` argument. 
+To always get such an object we simply spell-check the `WORDLIST_EXAMPLE.txt` file using itslef as the list of words to ignore:
 
 ```{r}
 #| error: true
@@ -272,7 +292,6 @@ jobs:
         shell: Rscript {0}
 ```
 
-### append wordlist
 
 ## Change language
 
@@ -289,7 +308,7 @@ Let's write a file that contains a German quote (by *JW von Goethe*).
 ```{r}
 #zitat <- file("Zitat.txt", encoding = "UTF-8")
 #write(x = "Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")
-write_lines("Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")
+write_lines("Es hört doch jeder nur, was er versthet.", file = "Zitat.txt")
 ```
 
 The `spelling` package does not recognize the language in a file:
@@ -305,7 +324,7 @@ hunspell::list_dictionaries()
 ```
 
 Apparently, only English dictionaries are available at the moment.
-You can download dictionaries from the [LibreOffice GitHub repo](https://github.com/LibreOffice/dictionaries).
+You can download UTF-8 encoded dictionaries from the [LibreOffice GitHub repo fork](https://github.com/JetBrains/hunspell-dictionaries).
 For me, the easiest way was to download the entire repo as a `.zip` folder and then move the dictionary files manually into the repo in which you want to spell-check using that dictionary.
 
 `hunspell` requires two dictionary files for a language: the `.dic` and the `.aff` file.
@@ -317,12 +336,62 @@ list.files("../../inst")
 ```
 
 ```{r}
-spelling::spell_check_files("Zitat.txt", lang = "../../inst/de_CH_frami")
+spelling::spell_check_files("Zitat.txt", lang = "../../inst/de_CH_FRAMI")
 ```
-On the first try I got an encoding error, but after restarting RStudio this worked well. 
 
-Think about whether to link to the utf-8 github repo of the dictionaries: https://github.com/JetBrains/hunspell-dictionaries
+Now we just have to fix the error and check again.  
 
-...
+```{r}
+write_lines("Es hört doch jeder nur, was er versteht.", file = "Zitat.txt")
+```
+
+```{r}
+spelling::spell_check_files("Zitat.txt", lang = "../../inst/de_CH_FRAMI")
+
+```
+
+The `.yml` file for the german spell-check would like this: 
+
+
+```{yml}
+#| eval: false
+name: Spellcheck
+on:
+  pull_request: {branches: ['main']}
+jobs:
+  Spelling:
+    runs-on: ubuntu-latest
+    container: {image: "rocker/tidyverse:4.2.1"}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install spelling
+        run: if (!require("spelling")) install.packages("spelling")
+        shell: Rscript {0}
+
+      - name: Run Spelling Check test
+        run: spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"), lang = "inst/de_CH_frami")
+        shell: Rscript {0}
+
+      - name: Install testthat
+        run: if (!require("testthat")) install.packages("testthat")
+        shell: Rscript {0}
+
+      - name: test typos
+        run: testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"), lang = "inst/de_CH_FRAMI"), expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"), lang = "inst/de_CH_FRAMI")))
+        shell: Rscript {0}
+```
+
+
+## Conclusion
+
+You should now be able to run a spell-check on your quarto files. 
+Further, you know how to implement a GitHub CICD pipeline for spell-checks in any language with available dictionary files. 
+This also allows you to implement other R-code based CICD pipelines. 
+
+For your (and my) convenience, I have created book-templates for both [English](https://github.com/StefanThoma/en_quarto_template) and [German](https://github.com/StefanThoma/de_quarto_template) quarto books.
+They include CICD pipelines for both spelling and style check, and also implement a CICD publishing workflow. 
+Please read the respective `readme.md` file for more information.
 
 <!--------------- appendices go here ----------------->
