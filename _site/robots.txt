@@ -1,1 +1,1 @@
-Sitemap: https://blog.djnavarro.net/sitemap.xml
+Sitemap: https://stefanthoma.github.io/quarto-blog/sitemap.xml
