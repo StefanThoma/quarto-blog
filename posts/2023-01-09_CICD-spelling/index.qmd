@@ -4,7 +4,7 @@ author:
   - name: Stefan Thoma
 
 description: "This post explains how to use GitHub to automatically check the spelling of your quarto document through the process of continuous integration and deployment (CICD)."
-date: "2023-01-01"
+date: "2023-03-07"
 categories: [CICD, R, GitHub, Quarto]
 image: "CICD.png"
 ---
@@ -14,7 +14,7 @@ image: "CICD.png"
 ```{r setup, include=FALSE}
 set.seed(8)
 long_slug <- "2023-01-09_CICD-spelling"
-#renv::use(lockfile = "renv.lock")
+# renv::use(lockfile = "renv.lock")
 wide <- 136
 narrow <- 76
 options(width = narrow)
@@ -67,7 +67,7 @@ If you are working on any other R project you have to use the `spell_check_files
 Let's check just this file:
 
 ```{r}
-#2023-01-09_CICD-spelling/
+# 2023-01-09_CICD-spelling/
 spelling::spell_check_files(path = "index.qmd")
 ```
 
@@ -93,17 +93,21 @@ read_lines("WORDLIST.txt")
 Now we can tell `spelling` to ignore the words in this file from typo-detection:
 
 ```{r}
-spelling::spell_check_files(path = "index.qmd", 
-                            ignore = read_lines("WORDLIST.txt"))
+spelling::spell_check_files(
+  path = "index.qmd",
+  ignore = read_lines("WORDLIST.txt")
+)
 ```
 
-You can find a more comprehensive guide to the `spelling` package [in the manual.](https://cran.r-project.org/web/packages/spelling/spelling.pdf)
+You can find a more comprehensive guide to the `spelling` package [in the package manual.](https://cran.r-project.org/web/packages/spelling/spelling.pdf)
 
 ```{r}
-# we can get all qmd's in a project by 
-list.files(path = "../..", # first setting the path to the project
-           recursive = TRUE, # include subfolders
-           pattern = ".*.qmd$") # include only files ending in .qmd
+# we can get all qmd's in a project by
+list.files(
+  path = "../..", # first setting the path to the project
+  recursive = TRUE, # include subfolders
+  pattern = ".*.qmd$"
+) # include only files ending in .qmd
 ```
 
 ::: callout-caution
@@ -118,10 +122,12 @@ The working directory of the CICD pipeline is by default on project level, there
 :::
 
 ```{r}
-wordlist <- list.files(path = "../..", 
-                       recursive = TRUE, 
-                       full.names = TRUE,
-                       pattern = ".*.qmd$") %>% 
+wordlist <- list.files(
+  path = "../..",
+  recursive = TRUE,
+  full.names = TRUE,
+  pattern = ".*.qmd$"
+) %>%
   spelling::spell_check_files()
 ```
 
@@ -132,17 +138,19 @@ What remains is a list of words to be ignored.
 They can now be saved into a project level `WORDLIST_EXAMPLE.txt` file to be accessed later by our CICD workflow.
 
 ```{r}
-#| eval: false
-write(x = wordlist[[1]], file =   "../../inst/WORDLIST_EXAMPLE.txt")
+#| eval: TRUE
+write(x = wordlist[[1]], file = "../../inst/WORDLIST_EXAMPLE.txt")
 ```
 
 Check again with `WORDLIST_EXAMPLE.txt`:
 
 ```{r}
-list.files(path = "../..", 
-                       recursive = TRUE, 
-                       full.names = TRUE,
-                       pattern = ".*.qmd$") %>% 
+list.files(
+  path = "../..",
+  recursive = TRUE,
+  full.names = TRUE,
+  pattern = ".*.qmd$"
+) %>%
   spelling::spell_check_files(ignore = read_lines("../../inst/WORDLIST_EXAMPLE.txt"))
 ```
 
@@ -164,7 +172,7 @@ Now this needs to be implemented in the CICD pipeline.
 To implement GitHub CICD I create a folder `.github` in the project directory, and the folder `workflows` within the `.github` folder.
 This is where CICD pipelines are stored.
 
-CICD pipelines written in `yaml` format, it should look like this:
+CICD pipelines are written in `yaml` format, it should look like this:
 
 ``` yaml
 #| eval: false
@@ -244,26 +252,31 @@ We use its `test_that()` function together with the `expect_equal()` function wh
 Our test is simple: As the `object` argument we run the spell-check from above. 
 The output we expect is a spell-check that did not result in any error. 
 We have to supply such an object representing a flawless spell-check in the `expected` argument. 
-To always get such an object we simply spell-check the `WORDLIST_EXAMPLE.txt` file using itslef as the list of words to ignore:
+To always get such an object we simply spell-check the `WORDLIST_EXAMPLE.txt` file using itself as the list of words to ignore:
 
 ```{r}
 #| error: true
-testthat::test_that(desc = "No Typo", 
-                    code = testthat::expect_equal(
-                      object = spelling::spell_check_files(path = list.files(path = "../..", pattern = ".*.qmd$", 
-                                                                             recursive = TRUE, full.names = TRUE), 
-                                                           ignore = readr::read_lines("../../inst/WORDLIST_EXAMPLE.txt")
-                                                           ),
-                      expected = spelling::spell_check_files(path =  "../../inst/WORDLIST_EXAMPLE.txt",
-                                                              ignore = readr::read_lines("../../inst/WORDLIST_EXAMPLE.txt")
-                                                             )
-                      )
-                    )
+testthat::test_that(
+  desc = "No Typo",
+  code = testthat::expect_equal(
+    object = spelling::spell_check_files(
+      path = list.files(
+        path = "../..", pattern = ".*.qmd$",
+        recursive = TRUE, full.names = TRUE
+      ),
+      ignore = readr::read_lines("../../inst/WORDLIST_EXAMPLE.txt")
+    ),
+    expected = spelling::spell_check_files(
+      path = "../../inst/WORDLIST_EXAMPLE.txt",
+      ignore = readr::read_lines("../../inst/WORDLIST_EXAMPLE.txt")
+    )
+  )
+)
 ```
 
 We can now implement this test into our CICD workflow:
 
-``` yaml
+``` {yaml}
 name: Spellcheck
 on:
   pull_request: {branches: ['main']}
@@ -288,7 +301,11 @@ jobs:
         shell: Rscript {0}
 
       - name: test typos
-        run: testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt")), expected = spelling::spell_check_files(path = "inst/WORDLIST_EXAMPLE.txt", ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))))
+        run: testthat::test_that(desc = "No Typo", code = {
+        no_problem <- spelling::spell_check_files(path = "inst/WORDLIST_EXAMPLE.txt", ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))
+        spellcheck <- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"))
+        testthat::expect_equal(object = spellcheck, expected = no_problem)
+        })
         shell: Rscript {0}
 ```
 
@@ -306,8 +323,8 @@ As soon as we want to spell-check on GitHub (with CICD) it gets a bit more trick
 Let's write a file that contains a German quote (by *JW von Goethe*).
 
 ```{r}
-#zitat <- file("Zitat.txt", encoding = "UTF-8")
-#write(x = "Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")
+# zitat <- file("Zitat.txt", encoding = "UTF-8")
+# write(x = "Es hört doch jeder nur, was er verowokjnsthet.", file = "Zitat.txt")
 write_lines("Es hört doch jeder nur, was er versthet.", file = "Zitat.txt")
 ```
 
@@ -347,7 +364,6 @@ write_lines("Es hört doch jeder nur, was er versteht.", file = "Zitat.txt")
 
 ```{r}
 spelling::spell_check_files("Zitat.txt", lang = "../../inst/de_CH_FRAMI")
-
 ```
 
 The `.yml` file for the german spell-check would like this: 
@@ -379,7 +395,11 @@ jobs:
         shell: Rscript {0}
 
       - name: test typos
-        run: testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"), lang = "inst/de_CH_FRAMI"), expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"), lang = "inst/de_CH_FRAMI")))
+        run: testthat::test_that(desc = "No Typo", code = {
+        no_problem <- spelling::spell_check_files(path = "inst/WORDLIST_EXAMPLE.txt", ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"), lang = "inst/de_CH_FRAMI")
+        spellcheck <- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST_EXAMPLE.txt"), lang = "inst/de_CH_FRAMI")
+        testthat::expect_equal(object = spellcheck, expected = no_problem)
+        })
         shell: Rscript {0}
 ```
 

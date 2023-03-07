@@ -16,7 +16,6 @@ hört
 https
 hunspell
 ìnst
-itslef
 jeder
 JetBrains
 JW

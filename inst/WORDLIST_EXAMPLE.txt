@@ -1,6 +1,4 @@
 aff
-Bayseic
-blabla
 callout
 CICD
 cran
@@ -17,6 +15,7 @@ FRAMI
 frontimage
 fs
 genart
+german
 github
 gsub
 hört
@@ -26,10 +25,10 @@ hunspell
 ìnst
 jeder
 JetBrains
-jpg
 JW
 lang
 lockfile
+md
 netlify
 nur
 png
@@ -39,12 +38,12 @@ px
 qmd
 qmd's
 readLines
+readme
 readr
 renv
 repo
 Rproj
 Rscript
-RStudio
 StefanThoma
 str
 stringr
@@ -54,12 +53,14 @@ Thoma
 tidyverse
 ubuntu
 unlist
-utf
 verowokjnsthet
+versteht
+versthet
 von
 wordlist
 WORDLIST
 writeLines
 yaml
+yml
 zitat
 Zitat

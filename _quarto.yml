@@ -3,21 +3,21 @@ project:
 
 website:
   title: "Notes"
- # site-url: https://blog.djnavarro.net
-#  repo-url: https://github.com/djnavarro/quarto-blog
+  site-url: https://stefanthoma.github.io/quarto-blog/
+  repo-url: https://github.com/StefanThoma/quarto-blog
   open-graph: true
 #  twitter-card:
 #    creator: "@djnavarro"
 #    card-style: summary_large_image
   navbar:
     background: "#eeeeee"
-#    right:
+    right:
 #      - icon: mastodon
 #        aria-label: mastodon
 #        href: https://fosstodon.org/@djnavarro
-#      - icon: github
-#        aria-label: github
-#        href: https://github.com/djnavarro
+      - icon: github
+        aria-label: github
+        href: https://github.com/StefanThoma
 #      - icon: person-circle
 #        aria-label: website
 #        href: https://djnavarro.net
