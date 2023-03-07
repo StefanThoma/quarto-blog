@@ -22,9 +22,5 @@ jobs:
         shell: Rscript {0}
 
       - name: test typos
-        run: testthat::test_that(desc = "No Typo", code = {
-        no_problem <- spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))
-        spellcheck <- spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt"))
-        testthat::expect_equal(object = spellcheck, expected = no_problem)
-        })
+        run: testthat::test_that(desc = "No Typo", code = testthat::expect_equal(object = spelling::spell_check_files(list.files(pattern = ".*.qmd$", recursive = TRUE), ignore = readr::read_lines("inst/WORDLIST.txt")), expected = spelling::spell_check_files(path = "inst/WORDLIST.txt", ignore = readr::read_lines("inst/WORDLIST.txt"))))
         shell: Rscript {0}
