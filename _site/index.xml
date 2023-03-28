@@ -84,34 +84,38 @@ Recover the lost data
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># set up empty df to store all submissions</span></span>
-<span id="cb2-2">origin <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">score =</span> <span class="fu" style="color: #4758AB;">numeric</span>(),</span>
-<span id="cb2-3">                 <span class="at" style="color: #657422;">task =</span> <span class="fu" style="color: #4758AB;">character</span>(),</span>
-<span id="cb2-4">                 <span class="at" style="color: #657422;">team =</span> <span class="fu" style="color: #4758AB;">character</span>(),</span>
-<span id="cb2-5">                 <span class="at" style="color: #657422;">email =</span> <span class="fu" style="color: #4758AB;">character</span>(), </span>
-<span id="cb2-6">                 <span class="at" style="color: #657422;">time =</span> <span class="fu" style="color: #4758AB;">character</span>())</span>
-<span id="cb2-7"></span>
-<span id="cb2-8"><span class="co" style="color: #5E5E5E;"># downloads, reads, and returns one csv file given a file id</span></span>
-<span id="cb2-9">get_file <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(row){</span>
-<span id="cb2-10">  tf <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tempfile</span>()</span>
-<span id="cb2-11">  row <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">as_id</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">drive_download</span>(<span class="at" style="color: #657422;">path =</span> tf)</span>
-<span id="cb2-12">  new <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(tf) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
-<span id="cb2-13">    <span class="fu" style="color: #4758AB;">select</span>(score, task, team) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
-<span id="cb2-14">    <span class="fu" style="color: #4758AB;">distinct</span>()</span>
-<span id="cb2-15">}</span></code></pre></div>
+<span id="cb2-2">origin <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(</span>
+<span id="cb2-3">  <span class="at" style="color: #657422;">score =</span> <span class="fu" style="color: #4758AB;">numeric</span>(),</span>
+<span id="cb2-4">  <span class="at" style="color: #657422;">task =</span> <span class="fu" style="color: #4758AB;">character</span>(),</span>
+<span id="cb2-5">  <span class="at" style="color: #657422;">team =</span> <span class="fu" style="color: #4758AB;">character</span>(),</span>
+<span id="cb2-6">  <span class="at" style="color: #657422;">email =</span> <span class="fu" style="color: #4758AB;">character</span>(),</span>
+<span id="cb2-7">  <span class="at" style="color: #657422;">time =</span> <span class="fu" style="color: #4758AB;">character</span>()</span>
+<span id="cb2-8">)</span>
+<span id="cb2-9"></span>
+<span id="cb2-10"><span class="co" style="color: #5E5E5E;"># downloads, reads, and returns one csv file given a file id</span></span>
+<span id="cb2-11">get_file <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(row) {</span>
+<span id="cb2-12">  tf <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tempfile</span>()</span>
+<span id="cb2-13">  row <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-14">    <span class="fu" style="color: #4758AB;">as_id</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-15">    <span class="fu" style="color: #4758AB;">drive_download</span>(<span class="at" style="color: #657422;">path =</span> tf)</span>
+<span id="cb2-16">  new <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(tf) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-17">    <span class="fu" style="color: #4758AB;">select</span>(score, task, team) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-18">    <span class="fu" style="color: #4758AB;">distinct</span>()</span>
+<span id="cb2-19">}</span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;"># quick and dirty for loop to subsequently download each file, extract information</span></span>
 <span id="cb3-2"><span class="co" style="color: #5E5E5E;">#  merge with previous information and squash it (using distinct()).</span></span>
-<span id="cb3-3"><span class="cf" style="color: #003B4F;">for</span>(i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">nrow</span>(task_info_master)){</span>
-<span id="cb3-4">  origin <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rbind</span>(origin, <span class="fu" style="color: #4758AB;">get_file</span>(<span class="at" style="color: #657422;">row =</span> task_info_master[i,])) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb3-3"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">nrow</span>(task_info_master)) {</span>
+<span id="cb3-4">  origin <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rbind</span>(origin, <span class="fu" style="color: #4758AB;">get_file</span>(<span class="at" style="color: #657422;">row =</span> task_info_master[i, ])) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
 <span id="cb3-5">    <span class="fu" style="color: #4758AB;">distinct</span>()</span>
-<span id="cb3-6">  </span>
+<span id="cb3-6"></span>
 <span id="cb3-7">  <span class="co" style="color: #5E5E5E;"># save progress in a separate file after every 100 downloaded and merged sheets</span></span>
-<span id="cb3-8">  <span class="cf" style="color: #003B4F;">if</span>(i<span class="sc" style="color: #5E5E5E;">%%</span><span class="dv" style="color: #AD0000;">100</span> <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">0</span>){</span>
+<span id="cb3-8">  <span class="cf" style="color: #003B4F;">if</span> (i <span class="sc" style="color: #5E5E5E;">%%</span> <span class="dv" style="color: #AD0000;">100</span> <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">0</span>) {</span>
 <span id="cb3-9">    <span class="fu" style="color: #4758AB;">print</span>(i)</span>
 <span id="cb3-10">    <span class="fu" style="color: #4758AB;">write_csv</span>(origin, <span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"prog_data/task_info_prog_"</span>, i, <span class="st" style="color: #20794D;">".csv"</span>, <span class="at" style="color: #657422;">sep =</span> <span class="st" style="color: #20794D;">""</span>))</span>
 <span id="cb3-11">    <span class="co" style="color: #5E5E5E;"># update on progress</span></span>
-<span id="cb3-12">    <span class="fu" style="color: #4758AB;">message</span>(i<span class="sc" style="color: #5E5E5E;">/</span><span class="fu" style="color: #4758AB;">nrow</span>(task_info_master)<span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">100</span>)</span>
+<span id="cb3-12">    <span class="fu" style="color: #4758AB;">message</span>(i <span class="sc" style="color: #5E5E5E;">/</span> <span class="fu" style="color: #4758AB;">nrow</span>(task_info_master) <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">100</span>)</span>
 <span id="cb3-13">  }</span>
 <span id="cb3-14">}</span></code></pre></div>
 </div>
@@ -157,12 +161,16 @@ Attaching package: 'dplyr'</code></pre>
 
     intersect, setdiff, setequal, union</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">df1 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">numbers =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>,</span>
-<span id="cb8-2">              <span class="at" style="color: #657422;">letters =</span> LETTERS[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>])</span>
-<span id="cb8-3">df2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(<span class="at" style="color: #657422;">numbers =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>,</span>
-<span id="cb8-4">              <span class="at" style="color: #657422;">letters =</span> letters[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>])</span>
-<span id="cb8-5"></span>
-<span id="cb8-6">diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf</span>(df1, df2)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">df1 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(</span>
+<span id="cb8-2">  <span class="at" style="color: #657422;">numbers =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>,</span>
+<span id="cb8-3">  <span class="at" style="color: #657422;">letters =</span> LETTERS[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>]</span>
+<span id="cb8-4">)</span>
+<span id="cb8-5">df2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(</span>
+<span id="cb8-6">  <span class="at" style="color: #657422;">numbers =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>,</span>
+<span id="cb8-7">  <span class="at" style="color: #657422;">letters =</span> letters[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>]</span>
+<span id="cb8-8">)</span>
+<span id="cb8-9"></span>
+<span id="cb8-10">diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf</span>(df1, df2)</span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in diffdf::diffdf(df1, df2): 
 Not all Values Compared Equal</code></pre>
@@ -213,7 +221,7 @@ All rows are shown in table below
 
 <div id="quarto-appendix" class="default"><section id="last-updated" class="level2 appendix"><h2 class="quarto-appendix-heading">Last updated</h2><div class="quarto-appendix-contents">
 
-<p>2023-03-28 08:44:23 UTC</p>
+<p>2023-03-28 09:02:09 UTC</p>
 </div></section><section id="details" class="level2 appendix"><h2 class="quarto-appendix-heading">Details</h2><div class="quarto-appendix-contents">
 
 <p><a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-03-14_shiny_run_script/index.qmd">source code</a>, <a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-03-14_shiny_run_script/renv.lock">R environment</a></p>
@@ -282,7 +290,7 @@ Stefan Thoma. 2023. <span>“Run Script on Shiny.”</span> March 14, 2023.
 <p>If you are working on a package, you can directly use the function <code>spell_check_package()</code> and the <code>spelling</code> package will do so. If you are working on any other R project you have to use the <code>spell_check_files()</code> function and you have to include a path to the files you want to check. Let’s check just this file:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="co" style="color: #5E5E5E;"># 2023-01-09_CICD-spelling/</span></span>
-<span id="cb5-2">spelling<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">spell_check_files</span>(<span class="at" style="color: #657422;">path =</span> <span class="st" style="color: #20794D;">"index.qmd"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb5-2">spelling<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">spell_check_files</span>(<span class="at" style="color: #657422;">path =</span> <span class="st" style="color: #20794D;">"index.qmd"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
 <span id="cb5-3">  <span class="fu" style="color: #4758AB;">head</span>()</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  WORD      FOUND IN
@@ -667,7 +675,7 @@ Documents.”</span> March 7, 2023. <a href="https://stefanthoma.github.io/quart
 
 <div id="quarto-appendix" class="default"><section id="last-updated" class="level2 appendix"><h2 class="quarto-appendix-heading">Last updated</h2><div class="quarto-appendix-contents">
 
-<p>2023-03-28 08:44:16 UTC</p>
+<p>2023-03-28 09:02:06 UTC</p>
 </div></section><section id="details" class="level2 appendix"><h2 class="quarto-appendix-heading">Details</h2><div class="quarto-appendix-contents">
 
 <p><a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-01-09_welcome/index.qmd">source code</a>, <a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-01-09_welcome/renv.lock">R environment</a></p>
