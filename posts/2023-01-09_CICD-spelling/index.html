@@ -271,7 +271,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>If you are working on a package, you can directly use the function <code>spell_check_package()</code> and the <code>spelling</code> package will do so. If you are working on any other R project you have to use the <code>spell_check_files()</code> function and you have to include a path to the files you want to check. Let’s check just this file:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2023-01-09_CICD-spelling/</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  WORD      FOUND IN
@@ -326,9 +326,10 @@ desc      index.qmd:261,305,399</code></pre>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="st">".*.qmd$"</span></span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>) <span class="co"># include only files ending in .qmd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "index.qmd"                               
-[2] "posts/2023-01-09_CICD-spelling/index.qmd"
-[3] "posts/2023-01-09_welcome/index.qmd"      </code></pre>
+<pre><code>[1] "index.qmd"                                     
+[2] "posts/2023-01-09_CICD-spelling/index.qmd"      
+[3] "posts/2023-01-09_welcome/index.qmd"            
+[4] "posts/2023-03-14_shiny_script_upload/index.qmd"</code></pre>
 </div>
 </div>
 <div class="callout-caution callout callout-style-default callout-captioned">
