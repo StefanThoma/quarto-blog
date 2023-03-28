@@ -271,63 +271,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>If you are working on a package, you can directly use the function <code>spell_check_package()</code> and the <code>spelling</code> package will do so. If you are working on any other R project you have to use the <code>spell_check_files()</code> function and you have to include a path to the files you want to check. Let’s check just this file:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2023-01-09_CICD-spelling/</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  WORD             FOUND IN
-aff              index.qmd:347,348,349
-callout          index.qmd:113
-CICD             index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,74,121,138,166,169,171,172,173,175,277,321,410,411,414
-cran             index.qmd:102
-de               index.qmd:348,349,356,366,390,399,400,413
-desc             index.qmd:260,304,398
-dic              index.qmd:347,348,349
-djnavarro        index.qmd:233
-doch             index.qmd:327,328,362
-eval             index.qmd:56,141,165,178,204,373
-frami            index.qmd:348,349,390
-FRAMI            index.qmd:349,356,366,399,400
-german           index.qmd:369
-github           index.qmd:172,344,413
-hört            index.qmd:327,328,362
-https            index.qmd:102,233,344,413
-hunspell         index.qmd:316,337,340,344,347,349
-ìnst            index.qmd:246
-jeder            index.qmd:327,328,362
-JetBrains        index.qmd:344
-JW               index.qmd:323
-lang             index.qmd:349,356,366,390,399,400
-lockfile         index.qmd:17
-md               index.qmd:415
-nur              index.qmd:327,328,362
-png              index.qmd:9
-pre              index.qmd:234,317
-qmd              index.qmd:71,84,97,109,110,116,117,129,152,195,226,264,296,306,390,400
-qmd's            index.qmd:105
-readme           index.qmd:415
-readr            index.qmd:195,226,267,271,296,305,306,390,399,400
-renv             index.qmd:17
-repo             index.qmd:187,218,238,288,344,345,382
-Rproj            index.qmd:116
-Rscript          index.qmd:192,196,223,227,242,293,297,301,309,387,391,395,403
-StefanThoma      index.qmd:413
-subfolders       index.qmd:108
-testthat         index.qmd:250,259,261,299,300,304,307,393,394,398,401
-Thoma            index.qmd:4
-tidyverse        index.qmd:61,185,216,234,286,380
-ubuntu           index.qmd:184,215,285,379
-verowokjnsthet   index.qmd:327
-versteht         index.qmd:362
-versthet         index.qmd:328
-von              index.qmd:323
-wordlist         index.qmd:79,125,142
-WORDLIST         index.qmd:84,90,98,138,142,145,154,159,162,195,226,246,255,267,270,271,296,305,306,348,390,399,400
-yaml             index.qmd:175,177,203,212,279
-yml              index.qmd:369,372
-zitat            index.qmd:326
-Zitat            index.qmd:326,327,328,334,356,362,366</code></pre>
+<pre><code>  WORD      FOUND IN
+aff       index.qmd:348,349,350
+callout   index.qmd:114
+CICD      index.qmd:2,6,8,9,16,27,28,31,33,34,35,37,38,46,47,53,70,122,139,167,170,172,173,174,176,278,322,411,412,415
+cran      index.qmd:103
+de        index.qmd:349,350,357,367,391,400,401,414
+desc      index.qmd:261,305,399</code></pre>
 </div>
 </div>
-<p>It looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word <em>CICD</em> (which apparently I overuse). We should carefully look through this list and decide, whether any mistakes were made. We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope). Therefore, we want to add these words to a file that include words to be ignored by the <code>spelling</code> package.</p>
+<p>It looks like there are a few words that spelling did not recognize. We should carefully look through the full list and decide whether any mistakes were made. We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope). Therefore, we want to add these words to a file that include words to be ignored by the <code>spelling</code> package.</p>
 <p>If you are working on a package, this is easy, you can use the <code>spelling::update_wordlist()</code> function. We simply save the list of words as a <em>.txt</em> file. For now, we save it in the working directory.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(spelling<span class="sc">::</span><span class="fu">spell_check_files</span>(<span class="at">path =</span> <span class="st">"index.qmd"</span>)[[<span class="dv">1</span>]], <span class="st">"WORDLIST.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -370,9 +326,10 @@ Zitat            index.qmd:326,327,328,334,356,362,366</code></pre>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="st">".*.qmd$"</span></span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>) <span class="co"># include only files ending in .qmd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "index.qmd"                               
-[2] "posts/2023-01-09_CICD-spelling/index.qmd"
-[3] "posts/2023-01-09_welcome/index.qmd"      </code></pre>
+<pre><code>[1] "index.qmd"                                     
+[2] "posts/2023-01-09_CICD-spelling/index.qmd"      
+[3] "posts/2023-01-09_welcome/index.qmd"            
+[4] "posts/2023-03-14_shiny_script_upload/index.qmd"</code></pre>
 </div>
 </div>
 <div class="callout-caution callout callout-style-default callout-captioned">

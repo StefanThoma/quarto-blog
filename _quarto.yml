@@ -30,5 +30,7 @@ format:
     theme: ember.scss
     css: styles.css
  #   include-after-body: plausible.html
-
+preview:
+    port: 4200
+    browser: false
 

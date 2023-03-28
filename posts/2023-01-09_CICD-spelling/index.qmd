@@ -68,11 +68,12 @@ Let's check just this file:
 
 ```{r}
 # 2023-01-09_CICD-spelling/
-spelling::spell_check_files(path = "index.qmd")
+spelling::spell_check_files(path = "index.qmd") %>%
+  head()
 ```
 
-It looks like there are a few words that spelling did not recognize, mostly file extensions, my last name, and the word *CICD* (which apparently I overuse).
-We should carefully look through this list and decide, whether any mistakes were made.
+It looks like there are a few words that spelling did not recognize.
+We should carefully look through the full list and decide whether any mistakes were made.
 We would not want the GitHub action to prohibit a merge request for any of these words, as there are no typos present (I hope).
 Therefore, we want to add these words to a file that include words to be ignored by the `spelling` package.
 
