@@ -83,7 +83,7 @@ Instead, for each submission, the `submissions` file was downloaded, appended, a
 Unfortunately, this lead to a data loss, as the file was continuously overwritten, especially when two teams would submit simultaneously.
 
 ::: callout-note
-## Recover the lost data
+## Recover the Lost Data
 
 Whenever the `submissions.csv` file was uploaded, the previous version was sent to the Google drive bin.
 We ended up with over 3000 `submissions.csv` files containing a lot of redundant information.
@@ -151,7 +151,7 @@ As both packages follow the same style, going from one to the other is really si
 However, you can reuse the cached token from the `googledrive` authentication by setting `gs4_auth(token = drive_token())`. 
 
 
-### Security concerns
+### Security Concerns
 
 Connecting a public shiny app to your Google account introduces a security vulnerability in general.
 Especially so, because we implemented the upload of files to the Google drive.
@@ -161,7 +161,7 @@ A malicious party might be able to extract the authentication token of our Googl
 To reduce risk, I simply created an un-associated Google account to host the drive.
 There are certainly better options available, but this seemed a reasonable solution for basically zero effort.
 
-## Register team
+## Register Team
 
 We wanted to allow users to sign up as teams using the shiny app. 
 The app provides a simple interface where users could input a team name and the number of members.
@@ -175,7 +175,7 @@ The team registration itself was adding the team information to the Google sheet
 
 The checks and registration is implemented in the `register_team()` function stored in `interact_with_google.R`. 
 
-## upload & source script
+## Upload & Source Script
 
 To upload a script, participants had to select their team first. 
 The input options were based on the existing folders on the Google-drive in the `mock_hackathon` folder.
@@ -196,7 +196,7 @@ On the shiny server this was solved by copying the required `adam` dataset from 
 After sourcing the content in the `adam` folder was deleted. 
 
 
-## compare to solution file
+## Compare to Solution File
 
 We want to compare the file created by participants with our solution (key) file stored in the `key` folder.
 The `diffdf::diffdf()` function allows for easy comparison of two data-frames and directly provides extensive feedback for the user: 
@@ -211,9 +211,45 @@ df2 <- tibble(
   numbers = 1:10,
   letters = letters[1:10]
 )
-
-diffdf::diffdf(df1, df2)
 ```
+
+## Score
+
+To compare submissions between participants we implemented a simple scoring function (`score_f()`) based on the table comparison by `diffdf()`.
+The function can be found in the `compare_dfs.R` file:
+```{r}
+score_f <- function(df_user, df_key, keys) {
+  score <- 10
+  diff <- diffdf::diffdf(df_user, df_key, keys = keys)
+  if (!diffdf::diffdf_has_issues(diff)) {
+    return(score)
+  }
+
+  if (!diffdf::diffdf_has_issues(diffdf::diffdf(df_user,
+    df_key,
+    keys = keys,
+    strict_numeric = FALSE,
+    strict_factor = FALSE
+  ))) {
+    return(score - 1)
+  }
+  return(round(min(max(score - length(diff) / 3, 1), 9), 2))
+}
+```
+
+Every comparison starts with a score of `10`. 
+We then subtract the length of the comparison object divided by a factor of `3`. 
+The length of the comparison object is a simplified way to represent the difference between the two data-frames by one value. 
+Finally, the score is bounded by `min(score, 1)`. 
+
+The score is not a perfect capture of the quality of the script uploaded but: 
+1.    helped participants get an idea of how close their data-frame is to the solution file
+2.    allowed us to raffle prizes based on the merit of submitted r-scripts
+
+
+
+
+
 
 
 <!--------------- appendices go here ----------------->
