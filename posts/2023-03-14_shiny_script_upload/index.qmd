@@ -1,12 +1,12 @@
 ---
-title: "Run Script on Shiny"
+title: "Automatic Feedback for R Exercises Using Shiny"
 author:
   - name: Stefan Thoma
 
 description: "Going through the process of creating a shiny app for a teaching situation where users implement data-transformation instructions. The shiny app allows users to check their solutions autonomously, gives feedback, and rates their results."
 date: "2023-03-14"
 categories: [R, shiny, teaching]
-image: "welcome.png"
+image: "shiny_klee.png"
 
 ---
 

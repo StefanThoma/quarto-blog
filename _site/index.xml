@@ -19,7 +19,7 @@
 <generator>quarto-1.1.189</generator>
 <lastBuildDate>Tue, 14 Mar 2023 00:00:00 GMT</lastBuildDate>
 <item>
-  <title>Run Script on Shiny</title>
+  <title>Automatic Feedback for R Exercises Using Shiny</title>
   <dc:creator>Stefan Thoma</dc:creator>
   <link>https://stefanthoma.github.io/quarto-blog/posts/2023-03-14_shiny_script_upload/index.html</link>
   <description><![CDATA[ 
@@ -221,28 +221,28 @@ All rows are shown in table below
 
 <div id="quarto-appendix" class="default"><section id="last-updated" class="level2 appendix"><h2 class="quarto-appendix-heading">Last updated</h2><div class="quarto-appendix-contents">
 
-<p>2023-03-28 09:02:09 UTC</p>
+<p>2023-04-04 05:32:31 UTC</p>
 </div></section><section id="details" class="level2 appendix"><h2 class="quarto-appendix-heading">Details</h2><div class="quarto-appendix-contents">
 
 <p><a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-03-14_shiny_run_script/index.qmd">source code</a>, <a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-03-14_shiny_run_script/renv.lock">R environment</a></p>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{thoma2023,
   author = {Stefan Thoma},
   editor = {},
-  title = {Run {Script} on {Shiny}},
+  title = {Automatic {Feedback} for {R} {Exercises} {Using} {Shiny}},
   date = {2023-03-14},
   url = {https://stefanthoma.github.io/quarto-blog//posts/2023-03-14_shiny_script_upload},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-thoma2023" class="csl-entry quarto-appendix-citeas">
-Stefan Thoma. 2023. <span>“Run Script on Shiny.”</span> March 14, 2023.
-<a href="https://stefanthoma.github.io/quarto-blog//posts/2023-03-14_shiny_script_upload">https://stefanthoma.github.io/quarto-blog//posts/2023-03-14_shiny_script_upload</a>.
+Stefan Thoma. 2023. <span>“Automatic Feedback for R Exercises Using
+Shiny.”</span> March 14, 2023. <a href="https://stefanthoma.github.io/quarto-blog//posts/2023-03-14_shiny_script_upload">https://stefanthoma.github.io/quarto-blog//posts/2023-03-14_shiny_script_upload</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>shiny</category>
   <category>teaching</category>
   <guid>https://stefanthoma.github.io/quarto-blog/posts/2023-03-14_shiny_script_upload/index.html</guid>
   <pubDate>Tue, 14 Mar 2023 00:00:00 GMT</pubDate>
-  <media:content url="https://stefanthoma.github.io/quarto-blog/posts/2023-03-14_shiny_script_upload/welcome.png" medium="image" type="image/png" height="141" width="144"/>
+  <media:content url="https://stefanthoma.github.io/quarto-blog/posts/2023-03-14_shiny_script_upload/shiny_klee.png" medium="image" type="image/png" height="141" width="144"/>
 </item>
 <item>
   <title>Using CICD to check spelling in quarto documents</title>
@@ -675,7 +675,7 @@ Documents.”</span> March 7, 2023. <a href="https://stefanthoma.github.io/quart
 
 <div id="quarto-appendix" class="default"><section id="last-updated" class="level2 appendix"><h2 class="quarto-appendix-heading">Last updated</h2><div class="quarto-appendix-contents">
 
-<p>2023-03-28 09:02:06 UTC</p>
+<p>2023-04-04 05:32:28 UTC</p>
 </div></section><section id="details" class="level2 appendix"><h2 class="quarto-appendix-heading">Details</h2><div class="quarto-appendix-contents">
 
 <p><a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-01-09_welcome/index.qmd">source code</a>, <a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-01-09_welcome/renv.lock">R environment</a></p>
