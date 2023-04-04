@@ -69,7 +69,7 @@ Authentication
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Recover the lost data
+Recover the Lost Data
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -124,26 +124,26 @@ Recover the lost data
 <p>If you want to stay in the Google framework, I recommend using the <code>googlesheets4</code> package for structured data. <code>googlesheets4</code> allows appending new information to an already existing sheet without the need to download the file first. As both packages follow the same style, going from one to the other is really simple. <code>googlesheets4</code> requires authentication as well. However, you can reuse the cached token from the <code>googledrive</code> authentication by setting <code>gs4_auth(token = drive_token())</code>.</p>
 </section>
 <section id="security-concerns" class="level3">
-<h3 class="anchored" data-anchor-id="security-concerns">Security concerns</h3>
+<h3 class="anchored" data-anchor-id="security-concerns">Security Concerns</h3>
 <p>Connecting a public shiny app to your Google account introduces a security vulnerability in general. Especially so, because we implemented the upload of files to the Google drive. And even more problematic: We run a user generated script and display some of its output. A malicious party might be able to extract the authentication token of our Google account or could upload malware to the drive.</p>
 <p>To reduce risk, I simply created an un-associated Google account to host the drive. There are certainly better options available, but this seemed a reasonable solution for basically zero effort.</p>
 </section>
 </section>
 <section id="register-team" class="level2">
-<h2 class="anchored" data-anchor-id="register-team">Register team</h2>
+<h2 class="anchored" data-anchor-id="register-team">Register Team</h2>
 <p>We wanted to allow users to sign up as teams using the shiny app. The app provides a simple interface where users could input a team name and the number of members. This in turn would open two fields for each user to input their name and email address.</p>
 <p>We do simple checks to make sure at least one valid email address is supplied, and that the group name is acceptable. The group name cannot be empty, already taken, or contain vulgar words.</p>
 <p>The team registration itself was adding the team information to the Google sheets file <code>event_info</code> into the sheet <code>teams</code> and to create a team folder in which to store the uploaded R files.</p>
 <p>The checks and registration is implemented in the <code>register_team()</code> function stored in <code>interact_with_google.R</code>.</p>
 </section>
 <section id="upload-source-script" class="level2">
-<h2 class="anchored" data-anchor-id="upload-source-script">upload &amp; source script</h2>
+<h2 class="anchored" data-anchor-id="upload-source-script">Upload &amp; Source Script</h2>
 <p>To upload a script, participants had to select their team first. The input options were based on the existing folders on the Google-drive in the <code>mock_hackathon</code> folder. To upload a particular script participants had to also select the task to be solved. The uploaded script is then uploaded to the team folder following a standardised script naming convention.</p>
 <p>There are different aspects to be aware of when sourcing scripts on a shiny server. For example, you have to anticipate the packages users will include in their uploaded scripts, as their scripts will load but not install packages. Further, you should keep the global environment of your shiny app separate from the environment in which the script is sourced. This is possible by supplying an environment to the <code>source()</code> function, e.g: <code>source(path_to_script, local = new.env())</code></p>
 <p>Another thing we had to consider was to replicate the exact folder-structure on the shiny server that participants were working with when creating the scripts, as they were required to source some scripts and to save their file into a specific folder. This was relatively straight forward as we provided participants with a folder structure in the posit cloud instance they were using. They had access to the <code>sdtm</code> folder in which the data was stored, and the <code>adam</code> folder into which they saved their solutions. The structure also included a folder with metadata which was also available on the shiny server. For some tasks, participants required some <code>adam</code>-datasets stored in the <code>adam</code> folder, essentially the output from previous tasks. On the shiny server this was solved by copying the required <code>adam</code> dataset from the <code>key</code> folder (where our solutions to the tasks were stored) to the <code>adam</code> folder. After sourcing the content in the <code>adam</code> folder was deleted.</p>
 </section>
 <section id="compare-to-solution-file" class="level2">
-<h2 class="anchored" data-anchor-id="compare-to-solution-file">compare to solution file</h2>
+<h2 class="anchored" data-anchor-id="compare-to-solution-file">Compare to Solution File</h2>
 <p>We want to compare the file created by participants with our solution (key) file stored in the <code>key</code> folder. The <code>diffdf::diffdf()</code> function allows for easy comparison of two data-frames and directly provides extensive feedback for the user:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">library</span>(dplyr)</span></code></pre></div>
@@ -168,46 +168,33 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb8-5">df2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">tibble</span>(</span>
 <span id="cb8-6">  <span class="at" style="color: #657422;">numbers =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>,</span>
 <span id="cb8-7">  <span class="at" style="color: #657422;">letters =</span> letters[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>]</span>
-<span id="cb8-8">)</span>
-<span id="cb8-9"></span>
-<span id="cb8-10">diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf</span>(df1, df2)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in diffdf::diffdf(df1, df2): 
-Not all Values Compared Equal</code></pre>
+<span id="cb8-8">)</span></code></pre></div>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Differences found between the objects!
-
-A summary is given below.
-
-Not all Values Compared Equal
-All rows are shown in table below
-
-  =============================
-   Variable  No of Differences 
-  -----------------------------
-   letters          10         
-  -----------------------------
-
-
-All rows are shown in table below
-
-  ========================================
-   VARIABLE  ..ROWNUMBER..  BASE  COMPARE 
-  ----------------------------------------
-   letters         1         A       a    
-   letters         2         B       b    
-   letters         3         C       c    
-   letters         4         D       d    
-   letters         5         E       e    
-   letters         6         F       f    
-   letters         7         G       g    
-   letters         8         H       h    
-   letters         9         I       i    
-   letters        10         J       j    
-  ----------------------------------------</code></pre>
+</section>
+<section id="score" class="level2">
+<h2 class="anchored" data-anchor-id="score">Score</h2>
+<p>To compare submissions between participants we implemented a simple scoring function (<code>score_f()</code>) based on the table comparison by <code>diffdf()</code>. The function can be found in the <code>compare_dfs.R</code> file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">score_f <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(df_user, df_key, keys) {</span>
+<span id="cb9-2">  score <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">10</span></span>
+<span id="cb9-3">  diff <span class="ot" style="color: #003B4F;">&lt;-</span> diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf</span>(df_user, df_key, <span class="at" style="color: #657422;">keys =</span> keys)</span>
+<span id="cb9-4">  <span class="cf" style="color: #003B4F;">if</span> (<span class="sc" style="color: #5E5E5E;">!</span>diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf_has_issues</span>(diff)) {</span>
+<span id="cb9-5">    <span class="fu" style="color: #4758AB;">return</span>(score)</span>
+<span id="cb9-6">  }</span>
+<span id="cb9-7"></span>
+<span id="cb9-8">  <span class="cf" style="color: #003B4F;">if</span> (<span class="sc" style="color: #5E5E5E;">!</span>diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf_has_issues</span>(diffdf<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">diffdf</span>(df_user,</span>
+<span id="cb9-9">    df_key,</span>
+<span id="cb9-10">    <span class="at" style="color: #657422;">keys =</span> keys,</span>
+<span id="cb9-11">    <span class="at" style="color: #657422;">strict_numeric =</span> <span class="cn" style="color: #8f5902;">FALSE</span>,</span>
+<span id="cb9-12">    <span class="at" style="color: #657422;">strict_factor =</span> <span class="cn" style="color: #8f5902;">FALSE</span></span>
+<span id="cb9-13">  ))) {</span>
+<span id="cb9-14">    <span class="fu" style="color: #4758AB;">return</span>(score <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb9-15">  }</span>
+<span id="cb9-16">  <span class="fu" style="color: #4758AB;">return</span>(<span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">min</span>(<span class="fu" style="color: #4758AB;">max</span>(score <span class="sc" style="color: #5E5E5E;">-</span> <span class="fu" style="color: #4758AB;">length</span>(diff) <span class="sc" style="color: #5E5E5E;">/</span> <span class="dv" style="color: #AD0000;">3</span>, <span class="dv" style="color: #AD0000;">1</span>), <span class="dv" style="color: #AD0000;">9</span>), <span class="dv" style="color: #AD0000;">2</span>))</span>
+<span id="cb9-17">}</span></code></pre></div>
 </div>
-</div>
+<p>Every comparison starts with a score of <code>10</code>. We then subtract the length of the comparison object divided by a factor of <code>3</code>. The length of the comparison object is a simplified way to represent the difference between the two data-frames by one value. Finally, the score is bounded by <code>min(score, 1)</code>.</p>
+<p>The score is not a perfect capture of the quality of the script uploaded but: 1. helped participants get an idea of how close their data-frame is to the solution file 2. allowed us to raffle prizes based on the merit of submitted r-scripts</p>
 <!--------------- appendices go here ----------------->
 </section>
 <div class="cell">
@@ -221,7 +208,7 @@ All rows are shown in table below
 
 <div id="quarto-appendix" class="default"><section id="last-updated" class="level2 appendix"><h2 class="quarto-appendix-heading">Last updated</h2><div class="quarto-appendix-contents">
 
-<p>2023-04-04 05:32:31 UTC</p>
+<p>2023-04-04 07:25:27 UTC</p>
 </div></section><section id="details" class="level2 appendix"><h2 class="quarto-appendix-heading">Details</h2><div class="quarto-appendix-contents">
 
 <p><a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-03-14_shiny_run_script/index.qmd">source code</a>, <a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-03-14_shiny_run_script/renv.lock">R environment</a></p>
@@ -675,7 +662,7 @@ Documents.”</span> March 7, 2023. <a href="https://stefanthoma.github.io/quart
 
 <div id="quarto-appendix" class="default"><section id="last-updated" class="level2 appendix"><h2 class="quarto-appendix-heading">Last updated</h2><div class="quarto-appendix-contents">
 
-<p>2023-04-04 05:32:28 UTC</p>
+<p>2023-04-04 07:25:20 UTC</p>
 </div></section><section id="details" class="level2 appendix"><h2 class="quarto-appendix-heading">Details</h2><div class="quarto-appendix-contents">
 
 <p><a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-01-09_welcome/index.qmd">source code</a>, <a href="https://github.com/StefanThoma/quarto-blog/tree/main/posts/2023-01-09_welcome/renv.lock">R environment</a></p>
